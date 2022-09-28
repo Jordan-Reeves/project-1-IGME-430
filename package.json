@@ -1,0 +1,24 @@
+{
+  "name": "project-1-igme-430",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jordan-Reeves/project-1-IGME-430.git"
+  },
+  "author": "Jordan Reeves",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jordan-Reeves/project-1-IGME-430/issues"
+  },
+  "homepage": "https://github.com/Jordan-Reeves/project-1-IGME-430#readme",
+  "devDependencies": {
+    "eslint": "^8.24.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-plugin-import": "^2.26.0"
+  }
+}
