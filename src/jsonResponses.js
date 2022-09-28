@@ -30,25 +30,24 @@ const getUsersMeta = (request, response) => {
 
 const addUser = (request, response, body) => {
   const responseJSON = {
-    message: 'Name and Age are both required.',
+    message: 'Username is required.',
   };
 
-  if (!body.name || !body.age) {
+  if (!body.username) {
     responseJSON.id = 'addUserMissingParams';
     return respondJSON(request, response, 400, responseJSON);
   }
 
   let responseCode = 204; // update or no content, should send no body
 
-  if (!users[body.name]) {
+  if (!users[body.username]) {
     responseCode = 201; // now making a user
-    users[body.name] = {};
+    users[body.username] = {};
   }
 
   // works for update or creating
   // bc we know a user exists
-  users[body.name].name = body.name;
-  users[body.name].age = body.age;
+  users[body.username].username = body.username;
 
   // user created
   if (responseCode === 201) {

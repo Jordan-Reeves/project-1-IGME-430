@@ -46,18 +46,17 @@
      }
     };
 
-    const sendPost = async (nameForm) => {
-      const nameField = nameForm.querySelector('#nameField').value;
-      const ageField = nameForm.querySelector('#ageField').value;
+    const sendPost = async (usernameForm) => {
+      const usernameField = usernameForm.querySelector('#usernameField').value;
 
-      const nameAction = nameForm.getAttribute('action');
-      const nameMethod = nameForm.getAttribute('method');
+      const usernameAction = usernameForm.getAttribute('action');
+      const usernameMethod = usernameForm.getAttribute('method');
 
 
-      const formData = `name=${nameField}&age=${ageField}`;
+      const formData = `username=${usernameField}`;
 
-      const response = await fetch(nameAction, {
-        method: nameMethod, // 'POST'
+      const response = await fetch(usernameAction, {
+        method: usernameMethod, // 'POST'
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/x-www-form-urlencoded'
@@ -85,17 +84,16 @@
       });
 
        handleResponse(response, method === 'get');
-      //  handleResponse(response, false);
     };
 
 
     const init = () => {
-      const nameForm = document.querySelector('#nameForm');
+      const usernameForm = document.querySelector('#usernameForm');
       const userForm = document.querySelector('#userForm');
       
       const addUser = (e) => {
         e.preventDefault(); // stops form from sending request on it's own
-        sendPost(nameForm); // this will now send the request
+        sendPost(usernameForm); // this will now send the request
         return false;
       }
 
@@ -105,7 +103,7 @@
         return false;
       }
       
-      nameForm.addEventListener('submit', addUser);
+      usernameForm.addEventListener('submit', addUser);
       userForm.addEventListener('submit', getUsers);
     };
 
@@ -114,24 +112,40 @@
 </head>
 <body>
   <section id="top">
-    <h3>POST Status Code Tests</h3>
-    <form id="nameForm" action="/addUser" method="post">
-      <label for="name">Name: </label>
-      <input id="nameField" type="text" name="name" />
-      <label for="age">Age: </label>
-      <input id="ageField" type="number" name="age" min="0" max="100" step="1"/>
-      <input type="submit" value="Add User" />
+    <h3>Add to your Book Collection!</h3>
+
+    <h4>Enter a username</h4>
+    <form id="usernameForm" action="/addUser" method="post">
+      <label for="username">Username: </label>
+      <input id="usernameField" type="text" name="username" />
+      <input type="submit" value="Submit" />
     </form>
-    <form id="userForm" action="/getUsers" method="get">
-      <select id='urlField'>
-        <option value='/getUsers'>/getUsers</option>
-        <option value='/notReal'>/notReal</option>
+
+    <!-- New page with Add book or view collection options -->
+    <br><br><br>
+    <h3>Eventually will be a seperate page</h3>
+
+
+    <h4>Add books to your collection</h4>
+    <form id="bookForm" action="/addBook" method="post">
+      <label for="title">Title: </label>
+      <input id="titleField" type="text" name="title" />
+      <label for="author">Author: </label>
+      <input id="authorField" type="text" name="author" />
+      <label for="bookStatus">BookStatus: </label>
+      <select id="bookStatus" name="bookStatus">
+        <option value="reading">Reading</option>
+        <option value="finished">Finished</option>
+        <option value="tbr">tbr</option>
       </select>
-      <select id="methodSelect">
-        <option value="get">GET</option>
-        <option value="head">HEAD</option>
-      </select>
-      <input type="submit" value="Get User" />
+      <input type="submit" value="Submit" />
+    </form>
+
+    <p>Or</p>
+
+    <h4>View your collection</h4>
+    <form id="viewForm" action="/getUsers" method="get">
+      <input type="submit" value="View Collection" />
     </form>
   </section>
   <section id="content">
