@@ -1,110 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Our simple HTTP server</title>
+  <title>Book Collecter: Project 1 IGME-430</title>
   <link rel="stylesheet" type="text/css" href="/style.css">
   
   <script>
-    const handleResponse = async (response, parseResponse) => {
-      const content = document.querySelector('#content');
-      
-      switch(response.status) {
-        case 200:
-          content.innerHTML = `<b>Success</b>`;
-          break;
-        case 201:
-          content.innerHTML = '<b>Created</b>';
-          break;
-        case 204:
-          content.innerHTML = '<b>Updated (No Content)</b>';
-          return;
-        case 400:
-          content.innerHTML = `<b>Bad Request</b>`;
-          break;
-        case 404:
-          content.innerHTML = `<b>Not Found</b>`;
-          break;
-        default: 
-          content.innerHTML = `Error code not implemented by client.`;
-          break;
-      }
-
-      if(parseResponse) {
-        //Parse the response to json. This is an async function, so we will await it.
-        let obj = await response.json();
-        console.log(obj);
-        // check for messages then display
-        if(obj.message){
-           content.innerHTML += `<p>Message: ${obj.message}</p>`;
-        }
-        // check for users then display
-        else if(obj.users){
-          //To display the data easily, we will just stringify it again and display it.
-          let jsonString = JSON.stringify(obj.users);
-          content.innerHTML += `<p>${jsonString}</p>`;
-        }
-     }
-    };
-
-    const sendPost = async (usernameForm) => {
-      const usernameField = usernameForm.querySelector('#usernameField').value;
-
-      const usernameAction = usernameForm.getAttribute('action');
-      const usernameMethod = usernameForm.getAttribute('method');
-
-
-      const formData = `username=${usernameField}`;
-
-      const response = await fetch(usernameAction, {
-        method: usernameMethod, // 'POST'
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: formData,
-      });
-
-      handleResponse(response, true);
-
-    };
-
-     //function to send request. This is marked as async since we will use await.
-    const requestUpdate = async (userForm) => {
-      
-      //Grab the url and method from the html form below
-      const url = userForm.querySelector('#urlField').value;
-      const method = userForm.querySelector('#methodSelect').value;
-      
-      //Await our fetch response. Go to the URL, use the right method, and attach the headers.
-      let response = await fetch(url, {
-        method,
-        headers: {
-            'Accept': 'application/json'
-        },
-      });
-
-       handleResponse(response, method === 'get');
-    };
-
-
     const init = () => {
       const usernameForm = document.querySelector('#usernameForm');
-      const userForm = document.querySelector('#userForm');
+      //localStorage.setItem("usernames",JSON.stringify([]));
       
-      const addUser = (e) => {
+      const addUserLS = (e) => {
         e.preventDefault(); // stops form from sending request on it's own
-        sendPost(usernameForm); // this will now send the request
-        return false;
+        const newUserName = usernameForm.querySelector('#usernameField').value;
+        // const storedUsernames = JSON.parse(localStorage.getItem("usernames"));
+        // if(!storedUsernames.includes(newUserName)){
+        //   localStorage.setItem('usernames', JSON.stringify([...storedUsernames, newUserName]));
+        // }
+        localStorage.setItem('username', newUserName); 
+        window.open('/collection', '_self');
       }
 
-      const getUsers = (e) => {
-        e.preventDefault();
-        requestUpdate(userForm);
-        return false;
-      }
-      
-      usernameForm.addEventListener('submit', addUser);
-      userForm.addEventListener('submit', getUsers);
+      usernameForm.addEventListener('submit', addUserLS);
     };
 
     window.onload = init;
@@ -115,38 +31,12 @@
     <h3>Add to your Book Collection!</h3>
 
     <h4>Enter a username</h4>
-    <form id="usernameForm" action="/addUser" method="post">
+    <form id="usernameForm" action="/addUserLS" method="post">
       <label for="username">Username: </label>
-      <input id="usernameField" type="text" name="username" />
+      <input id="usernameField" type="text" name="usernameField" />
       <input type="submit" value="Submit" />
     </form>
 
-    <!-- New page with Add book or view collection options -->
-    <br><br><br>
-    <h3>Eventually will be a seperate page</h3>
-
-
-    <h4>Add books to your collection</h4>
-    <form id="bookForm" action="/addBook" method="post">
-      <label for="title">Title: </label>
-      <input id="titleField" type="text" name="title" />
-      <label for="author">Author: </label>
-      <input id="authorField" type="text" name="author" />
-      <label for="bookStatus">BookStatus: </label>
-      <select id="bookStatus" name="bookStatus">
-        <option value="reading">Reading</option>
-        <option value="finished">Finished</option>
-        <option value="tbr">tbr</option>
-      </select>
-      <input type="submit" value="Submit" />
-    </form>
-
-    <p>Or</p>
-
-    <h4>View your collection</h4>
-    <form id="viewForm" action="/getUsers" method="get">
-      <input type="submit" value="View Collection" />
-    </form>
   </section>
   <section id="content">
   </section>

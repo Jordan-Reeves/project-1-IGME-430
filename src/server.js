@@ -33,20 +33,24 @@ const parseBody = (request, response, requestHandler) => {
 };
 
 const handlePost = (request, response, parsedUrl) => {
-  if (parsedUrl.pathname === '/addUser') {
-    parseBody(request, response, jsonHandler.addUser);
+  if (parsedUrl.pathname === '/addBook') {
+    parseBody(request, response, jsonHandler.addBook);
   }
 };
 
-const handleGet = (request, response, parsedUrl) => {
+const handleGet = (request, response, parsedUrl, params) => {
   if (parsedUrl.pathname === '/style.css') {
     htmlHandler.getCSS(request, response);
   } else if (parsedUrl.pathname === '/') {
     htmlHandler.getIndex(request, response);
-  } else if (parsedUrl.pathname === '/client.html') {
+  } else if (parsedUrl.pathname === '/client') {
     htmlHandler.getIndex(request, response);
+  } else if (parsedUrl.pathname === '/collection') {
+    htmlHandler.getCollection(request, response);
   } else if (parsedUrl.pathname === '/getUsers') {
     jsonHandler.getUsers(request, response);
+  } else if (parsedUrl.pathname === '/getBooks') {
+    jsonHandler.getBooks(request, response, params);
   } else {
     jsonHandler.notFound(request, response);
   }
@@ -62,16 +66,19 @@ const handleHead = (request, response, parsedUrl) => {
 
 const onRequest = (request, response) => {
   const parsedUrl = url.parse(request.url);
+  const params = query.parse(parsedUrl.query);
+
 
   if (request.method === 'POST') {
     handlePost(request, response, parsedUrl);
   } else if (request.method === 'HEAD') {
     handleHead(request, response, parsedUrl);
   } else {
-    handleGet(request, response, parsedUrl);
+    handleGet(request, response, parsedUrl, params);
   }
 };
 
 http.createServer(onRequest).listen(port, () => {
   console.log(`Listening on 127.0.0.1: ${port}`);
 });
+

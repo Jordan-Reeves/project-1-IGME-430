@@ -28,26 +28,43 @@ const getUsersMeta = (request, response) => {
   respondJSONMeta(request, response, 200);
 };
 
-const addUser = (request, response, body) => {
+const addBook = (request, response, body) => {
   const responseJSON = {
     message: 'Username is required.',
   };
 
   if (!body.username) {
-    responseJSON.id = 'addUserMissingParams';
+    responseJSON.id = 'addUserMissingParam';
     return respondJSON(request, response, 400, responseJSON);
   }
 
   let responseCode = 204; // update or no content, should send no body
 
   if (!users[body.username]) {
-    responseCode = 201; // now making a user
-    users[body.username] = {};
+    responseCode = 201; // making a new user
+    users[body.username] = {
+      books:[],
+    };
   }
 
-  // works for update or creating
-  // bc we know a user exists
-  users[body.username].username = body.username;
+  const oldBooks = users[body.username].books;
+  const newBook = {
+    title: body.title,
+    author:body.author,
+    bookStatus:body.bookStatus,
+  }
+
+  const bookExists = oldBooks.find(book => book.title == newBook.title);
+  if(bookExists){
+    bookExists.author = newBook.author;
+    bookExists.bookStatus = newBook.bookStatus;
+  }
+  else{
+    users[body.username].books = [
+      ...oldBooks,
+      newBook,
+    ];
+  }
 
   // user created
   if (responseCode === 201) {
@@ -77,10 +94,33 @@ const notFoundMeta = (request, response) => {
   respondJSONMeta(request, response, 404);
 };
 
+const getBooks = (request, response, params) => {
+  const responseJSON ={
+    message:'Missing username query parameter',
+  }
+
+  // if the request does not contain a username=__ query parameter or the username isn't in the users
+  if (!params.username) {
+    //const resTextString = JSON.stringify(responseJSON.message);
+    return respondJSON(request, response, 401, responseJSON, 'application/json');
+  }
+
+  responseJSON.message = 'You have successfully viewed your books';
+  responseJSON.username = params.username;
+  responseJSON.books = users[params.username].books;
+
+  //const resTextString = JSON.stringify(responseJSON.message);
+  console.log(responseJSON);
+  return respondJSON(request, response, 200, responseJSON, 'application/json');
+};
+
+
+
 module.exports = {
   getUsers,
-  addUser,
+  addBook,
   getUsersMeta,
   notFound,
   notFoundMeta,
+  getBooks,
 };
