@@ -30,36 +30,39 @@ const getUsersMeta = (request, response) => {
 
 const addBook = (request, response, body) => {
   const responseJSON = {
-    message: 'Username is required.',
+    message: 'Username and title is required.',
   };
 
-  if (!body.username) {
+  if (!body.username || !body.title) {
     responseJSON.id = 'addUserMissingParam';
     return respondJSON(request, response, 400, responseJSON);
   }
 
-  let responseCode = 204; // update or no content, should send no body
+  let responseCode = 201; // created
 
   if (!users[body.username]) {
-    responseCode = 201; // making a new user
     users[body.username] = {
-      books:[],
+      books: [],
     };
   }
 
   const oldBooks = users[body.username].books;
   const newBook = {
     title: body.title,
-    author:body.author,
-    bookStatus:body.bookStatus,
-  }
+    author: body.author ? body.author : 'not provided',
+    bookStatus: body.bookStatus,
+    notes: body.notes,
+    rating: body.rating,
+  };
 
-  const bookExists = oldBooks.find(book => book.title == newBook.title);
-  if(bookExists){
+  const bookExists = oldBooks.find((book) => book.title === newBook.title);
+  if (bookExists) {
+    responseCode = 204; // updated
     bookExists.author = newBook.author;
     bookExists.bookStatus = newBook.bookStatus;
-  }
-  else{
+    bookExists.notes = newBook.notes;
+    bookExists.rating = newBook.rating;
+  } else {
     users[body.username].books = [
       ...oldBooks,
       newBook,
@@ -68,11 +71,11 @@ const addBook = (request, response, body) => {
 
   // user created
   if (responseCode === 201) {
-    responseJSON.message = 'Created successfully';
+    responseJSON.message = 'Book created/added successfully';
     return respondJSON(request, response, responseCode, responseJSON);
   }
 
-  // user updated/no content: responseCode = 204
+  // user updated/no content: responseCode = 204, no body
   return respondJSONMeta(request, response, responseCode);
 };
 
@@ -95,13 +98,14 @@ const notFoundMeta = (request, response) => {
 };
 
 const getBooks = (request, response, params) => {
-  const responseJSON ={
-    message:'Missing username query parameter',
-  }
+  const responseJSON = {
+    message: 'Missing username query parameter',
+  };
 
-  // if the request does not contain a username=__ query parameter or the username isn't in the users
+  // if the request does not contain a username=__ query parameter
+  // or the username isn't in the users
   if (!params.username) {
-    //const resTextString = JSON.stringify(responseJSON.message);
+    // const resTextString = JSON.stringify(responseJSON.message);
     return respondJSON(request, response, 401, responseJSON, 'application/json');
   }
 
@@ -109,12 +113,10 @@ const getBooks = (request, response, params) => {
   responseJSON.username = params.username;
   responseJSON.books = users[params.username].books;
 
-  //const resTextString = JSON.stringify(responseJSON.message);
+  // const resTextString = JSON.stringify(responseJSON.message);
   console.log(responseJSON);
   return respondJSON(request, response, 200, responseJSON, 'application/json');
 };
-
-
 
 module.exports = {
   getUsers,

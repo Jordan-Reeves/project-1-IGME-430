@@ -1,8 +1,7 @@
 html, body {
   height: 100%;
   width: 100%;
-  margin: 0;
-  padding: 0;
+
 }
 
 #top {
@@ -14,8 +13,24 @@ html, body {
   font-size: 2em;
 }
 
-#content {
-  margin-top: 100px;
+#status {
+  margin-top: 60px;
   font-size: 2em;
+  text-align: center;
+}
+
+
+
+#content {
+  font-size: 2em;
+}
+#content h5 {
+  margin: 0 auto;
+}
+#content ul {
+  margin: 0 10px;
+}
+
+#currentUser {
   text-align: center;
 }

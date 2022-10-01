@@ -6,26 +6,26 @@
   
   <script>
     const handleResponse = async (response, parseResponse) => {
-      const content = document.querySelector('#content');
+      const status = document.querySelector('#status');
       
       switch(response.status) {
         case 200:
-          content.innerHTML = `<b>Success</b>`;
+          status.innerHTML = `<b>Success</b>`;
           break;
         case 201:
-          content.innerHTML = '<b>Created</b>';
+          status.innerHTML = '<b>Created</b>';
           break;
         case 204:
-          content.innerHTML = '<b>Updated (No Content)</b>';
+          status.innerHTML = '<b>Updated (No Content)</b>';
           return;
         case 400:
-          content.innerHTML = `<b>Bad Request</b>`;
+          status.innerHTML = `<b>Bad Request</b>`;
           break;
         case 404:
-          content.innerHTML = `<b>Not Found</b>`;
+          status.innerHTML = `<b>Not Found</b>`;
           break;
         default: 
-          content.innerHTML = `Error code not implemented by client.`;
+          status.innerHTML = `Error code not implemented by client.`;
           break;
       }
 
@@ -33,19 +33,45 @@
         //Parse the response to json. This is an async function, so we will await it.
         let obj = await response.json();
         console.log(obj);
+        content.innerHTML = '';
         if(obj.books){
           //To display the data easily, we will just stringify it again and display it.
-          let jsonString = JSON.stringify(obj.books);
-          content.innerHTML += `<p>${obj.username}</p>`;
-          content.innerHTML += `<p>${jsonString}</p>`;
+          //let jsonString = JSON.stringify(obj.books);
+          obj.books.forEach(book => {
+            content.innerHTML += `<h5>${book.title}</h5>`;
+            let detailsList = `<ul>`;
+            detailsList += `<li>Author: ${book.author}</li>`;
+            detailsList += `<li>Status: ${book.bookStatus}</li>`;
+            detailsList += `<li>Notes: ${book.notes}</li>`;
+            detailsList += `<li>Rating: ${book.rating} star(s)</li>`;
+            detailsList += `</ul>`;
+            content.innerHTML += detailsList;
+          })
+
         }
         else if(obj.users){
           //To display the data easily, we will just stringify it again and display it.
           let jsonString = JSON.stringify(obj.users);
-          content.innerHTML += `<p>${jsonString}</p>`;
-        }
+          console.log(jsonString);
+          //content.innerHTML += `<p>${jsonString}</p>`;
+          for (const [user, booksKey] of Object.entries(obj.users)) {
+            content.innerHTML += `<h5>User: ${user}</h5>`;
+            for (const [booksObj, array] of Object.entries(booksKey)) {
+              array.forEach(book => {
+                content.innerHTML += `<h5>${book.title}</h5>`;
+                let detailsList = `<ul>`;
+                detailsList += `<li>Author: ${book.author}</li>`;
+                detailsList += `<li>Status: ${book.bookStatus}</li>`;
+                detailsList += `<li>Notes: ${book.notes}</li>`;
+                detailsList += `<li>Rating: ${book.rating} star(s)</li>`;
+                detailsList += `</ul>`;
+                content.innerHTML += detailsList;
+              })
+            }
+          }
+       }
         else if(obj.message){
-           content.innerHTML += `<p>Message: ${obj.message}</p>`;
+           status.innerHTML += `<p>Message: ${obj.message}</p>`;
         }
         
      }
@@ -55,13 +81,15 @@
       const title = bookForm.querySelector('#titleField').value;
       const author = bookForm.querySelector('#authorField').value;
       const bookStatus = bookForm.querySelector('#bookStatus').value;
+      const notes = bookForm.querySelector('#notesField').value;
+      const rating = bookForm.querySelector('#ratingField').value;
 
       const bookAction = bookForm.getAttribute('action');
       const bookMethod = bookForm.getAttribute('method');
 
       const name = localStorage.getItem("username");
 
-      const formData = `username=${name}&title=${title}&author=${author}&bookStatus=${bookStatus}`;
+      const formData = `username=${name}&title=${title}&author=${author}&bookStatus=${bookStatus}&notes=${notes}&rating=${rating}`;
 
       const response = await fetch(bookAction, {
         method: bookMethod, // 'POST'
@@ -95,6 +123,9 @@
       const bookForm = document.querySelector('#bookForm');
       const viewForm = document.querySelector('#viewForm');
       const allCollections = document.querySelector('#allCollections');
+      const name = localStorage.getItem("username");
+      const currentUser = document.querySelector('#currentUser');
+      currentUser.innerHTML += name;
       
       const addBook = (e) => {
         e.preventDefault();
@@ -126,8 +157,9 @@
   </script>
 </head>
 <body>
-  <section id="top">
+  <h2 id="currentUser">Current User: </h2>
 
+  <section id="top">
     <h3>Add books to your collection</h3>
     <form id="bookForm" action="/addBook" method="post">
       <label for="title">Title: </label>
@@ -139,6 +171,18 @@
         <option value="reading">Reading</option>
         <option value="finished">Finished</option>
         <option value="tbr">tbr</option>
+      </select>
+      <br>
+      <label for="Notes">Notes: </label>
+      <input id="notesField" type="text" name="notes" />
+      <label for="rating">Rating: </label>
+      <select id="ratingField" name="rating">
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
       </select>
       <input type="submit" value="Submit" />
     </form>
@@ -156,6 +200,8 @@
     <form id="allCollections" action="/getUsers" method="get">
       <input type="submit" value="View All Collections" />
     </form>
+  </section>
+  <section id="status">
   </section>
   <section id="content">
   </section>

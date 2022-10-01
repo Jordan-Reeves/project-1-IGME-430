@@ -68,7 +68,6 @@ const onRequest = (request, response) => {
   const parsedUrl = url.parse(request.url);
   const params = query.parse(parsedUrl.query);
 
-
   if (request.method === 'POST') {
     handlePost(request, response, parsedUrl);
   } else if (request.method === 'HEAD') {
@@ -81,4 +80,3 @@ const onRequest = (request, response) => {
 http.createServer(onRequest).listen(port, () => {
   console.log(`Listening on 127.0.0.1: ${port}`);
 });
-
