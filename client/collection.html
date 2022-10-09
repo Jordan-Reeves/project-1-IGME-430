@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <title>Add or View Book Collector</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link rel="stylesheet" type="text/css" href="/style.css">
   
   <script>
@@ -44,6 +46,7 @@
             detailsList += `<li>Status: ${book.bookStatus}</li>`;
             detailsList += `<li>Notes: ${book.notes}</li>`;
             detailsList += `<li>Rating: ${book.rating} star(s)</li>`;
+            detailsList += `<li>Image: <br><img src=${book.imageURL}></li>`;
             detailsList += `</ul>`;
             content.innerHTML += detailsList;
           })
@@ -64,6 +67,7 @@
                 detailsList += `<li>Status: ${book.bookStatus}</li>`;
                 detailsList += `<li>Notes: ${book.notes}</li>`;
                 detailsList += `<li>Rating: ${book.rating} star(s)</li>`;
+                detailsList += `<li>Image: <br><img src=${book.imageURL}></li>`;
                 detailsList += `</ul>`;
                 content.innerHTML += detailsList;
               })
@@ -83,13 +87,14 @@
       const bookStatus = bookForm.querySelector('#bookStatus').value;
       const notes = bookForm.querySelector('#notesField').value;
       const rating = bookForm.querySelector('#ratingField').value;
+      const imageURL = bookForm.querySelector('#imageField').value;
 
       const bookAction = bookForm.getAttribute('action');
       const bookMethod = bookForm.getAttribute('method');
 
       const name = localStorage.getItem("username");
 
-      const formData = `username=${name}&title=${title}&author=${author}&bookStatus=${bookStatus}&notes=${notes}&rating=${rating}`;
+      const formData = `username=${name}&title=${title}&author=${author}&bookStatus=${bookStatus}&notes=${notes}&rating=${rating}&imageURL=${imageURL}`;
 
       const response = await fetch(bookAction, {
         method: bookMethod, // 'POST'
@@ -125,7 +130,7 @@
       const allCollections = document.querySelector('#allCollections');
       const name = localStorage.getItem("username");
       const currentUser = document.querySelector('#currentUser');
-      currentUser.innerHTML += name;
+      currentUser.innerHTML += name + "!";
       
       const addBook = (e) => {
         e.preventDefault();
@@ -151,13 +156,168 @@
       bookForm.addEventListener('submit', addBook);
       viewForm.addEventListener('submit', getBooks);
       allCollections.addEventListener('submit', getUsers);
+
+      document.querySelector("#burger").onclick = () => document.querySelector("#nav-links").classList.toggle('is-active');
+
     };
 
     window.onload = init;
   </script>
 </head>
 <body>
-  <h2 id="currentUser">Current User: </h2>
+  <nav class="navbar has-shadow is-white">
+    <!-- Logo/brand -->
+    <div class="navbar-brand">
+      <a class="navbar-item" href="client">
+        <i class="fas fa-book-open"></i>
+      </a>
+      <a class="navbar-burger" id="burger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </a>
+    </div>
+
+    <div class="navbar-menu" id="nav-links">
+      <div class="navbar-start">
+        <a class="navbar-item" id="User" href="client">
+          User
+        </a>
+
+        <a class="navbar-item is-hoverable has-text-weight-bold" id="Add Book" href="collection">
+          Add Book
+        </a>
+
+        <a class="navbar-item is-hoverable" id="Collection" href="favorites.html">
+          Your Collection
+        </a>
+
+        <a class="navbar-item is-hoverable" id="Community" href="community.html">
+          Community Collections
+        </a>
+      </div> <!-- End navbar -->
+    </div>
+  </nav>
+
+  <div class="columns is-vcentered has-text-white">
+    <div class="column">
+
+      <div class="hero is-large has-background-success p-4">
+        <div class="hero-header">
+          <h1 class="title is-1" style="color: white">
+            Add/Update a Book!
+          </h1>
+          <h2 class="subtitle is-4" style="color: white">
+          </h2>
+        </div>
+
+
+        <!-- Seach area -->
+        <div class="box m-5">
+          <div class="mb-3">
+            <h2 id="currentUser" class="title is-3 has-text-weight-bold">Hello </h2>
+
+            <form id="bookForm" action="/addBook" method="post">
+              <label for="title" class="title is-4 m-1 mb-2 has-text-black">Title: </label>
+              <input id="titleField" type="text" name="title" class="input has-text-black is-small" placeholder="Ex. Black Stallion" title="Enter a book title" />
+              <label for="author" class="title is-4 m-1 mb-2 has-text-black">Author: </label>
+              <input id="authorField" type="text" name="author" class="input has-text-black is-small" placeholder="Ex. Stacy Unknown" title="Enter an author" />
+              <br>
+              <label for="bookStatus" class="title is-4 m-1 mb-2 has-text-black">Book Status: </label>
+              <span class="select has-text-black is-small">
+                <select id="bookStatus" name="bookStatus">
+                  <option value="reading">Reading</option>
+                  <option value="finished">Finished</option>
+                  <option value="tbr">tbr</option>
+                </select>
+              </span>
+              <label for="notes" class="title is-4 m-1 mb-2 has-text-black">Notes: </label>
+              <input id="notesField" type="text" name="notes" class="input has-text-black is-small" placeholder="Ex. I thought this book was..." title="Enter any notes" />
+              <label for="rating" class="title is-4 m-1 mb-2 has-text-black">Rating: </label>
+              <span class="select has-text-black is-small">
+                <select id="ratingField" name="rating">
+                  <option value="0">0</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </span>
+              <br>
+              <label for="image" class="title is-4 m-1 mb-2 has-text-black">Image URL: </label>
+              <input id="imageField" type="text" name="image" class="input has-text-black is-small" placeholder="Ex. Stacy Unknown" title="Enter a url to an image" />
+              <input type="submit" value="Submit" class="button is-primary is-small" />
+            </form>
+            <br>
+
+            <!-- <h2 id="currentUser">Current User: </h2> -->
+
+            <section id="top">
+              <!-- <h3>Add books to your collection</h3>
+              <form id="bookForm" action="/addBook" method="post">
+                <label for="title">Title: </label>
+                <input id="titleField" type="text" name="title" />
+                <label for="author">Author: </label>
+                <input id="authorField" type="text" name="author" />
+                <label for="bookStatus">Book Status: </label>
+                <select id="bookStatus" name="bookStatus">
+                  <option value="reading">Reading</option>
+                  <option value="finished">Finished</option>
+                  <option value="tbr">tbr</option>
+                </select>
+                <br>
+                <label for="notes">Notes: </label>
+                <input id="notesField" type="text" name="notes" />
+                <label for="rating">Rating: </label>
+                <select id="ratingField" name="rating">
+                  <option value="0">0</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+                <label for="image">Image URL: </label>
+                <input id="imageField" type="text" name="image" />
+                <input type="submit" value="Submit" />
+              </form> -->
+          
+              <!-- <p>Or</p> -->
+          
+              <h3>View your collection</h3>
+              <form id="viewForm" action="/getBooks" method="get">
+                <input type="submit" value="View Collection" />
+              </form>
+          
+              <p>Or</p>
+          
+              <h3>View all users collections</h3>
+              <form id="allCollections" action="/getUsers" method="get">
+                <input type="submit" value="View All Collections" />
+              </form>
+            </section>
+            <section id="status">
+            </section>
+            <section id="content">
+            </section>
+          </div>
+        </div>
+      </div>
+      
+      <footer class="footer p-1 has-background-grey-lighter has-text-dark">
+        <div class="content has-text-centered">
+          <p>
+            Jordan Reeves | jar5937@rit.edu | IGME-430
+          </p>
+        </div>
+      </footer>
+
+    </div>
+
+
+
+  <!-- <h2 id="currentUser">Current User: </h2>
 
   <section id="top">
     <h3>Add books to your collection</h3>
@@ -184,6 +344,8 @@
         <option value="4">4</option>
         <option value="5">5</option>
       </select>
+      <label for="image">Image URL: </label>
+      <input id="imageField" type="text" name="image" />
       <input type="submit" value="Submit" />
     </form>
 
@@ -204,6 +366,6 @@
   <section id="status">
   </section>
   <section id="content">
-  </section>
+  </section> -->
 </body>
 </html>

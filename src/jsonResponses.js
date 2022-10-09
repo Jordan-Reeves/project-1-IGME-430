@@ -53,6 +53,7 @@ const addBook = (request, response, body) => {
     bookStatus: body.bookStatus,
     notes: body.notes,
     rating: body.rating,
+    imageURL: body.imageURL,
   };
 
   const bookExists = oldBooks.find((book) => book.title === newBook.title);
@@ -62,6 +63,7 @@ const addBook = (request, response, body) => {
     bookExists.bookStatus = newBook.bookStatus;
     bookExists.notes = newBook.notes;
     bookExists.rating = newBook.rating;
+    bookExists.imageURL = newBook.imageURL;
   } else {
     users[body.username].books = [
       ...oldBooks,
@@ -118,6 +120,12 @@ const getBooks = (request, response, params) => {
   return respondJSON(request, response, 200, responseJSON, 'application/json');
 };
 
+// function for 404 not found without message
+const getBooksMeta = (request, response) => {
+  // return a 404 without an error message
+  respondJSONMeta(request, response, 404);
+};
+
 module.exports = {
   getUsers,
   addBook,
@@ -125,4 +133,5 @@ module.exports = {
   notFound,
   notFoundMeta,
   getBooks,
+  getBooksMeta,
 };

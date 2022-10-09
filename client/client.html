@@ -2,32 +2,103 @@
 <html lang="en">
 <head>
   <title>Book Collecter: Project 1 IGME-430</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link rel="stylesheet" type="text/css" href="/style.css">
   
   <script>
     const init = () => {
       const usernameForm = document.querySelector('#usernameForm');
-      //localStorage.setItem("usernames",JSON.stringify([]));
       
       const addUserLS = (e) => {
         e.preventDefault(); // stops form from sending request on it's own
         const newUserName = usernameForm.querySelector('#usernameField').value;
-        // const storedUsernames = JSON.parse(localStorage.getItem("usernames"));
-        // if(!storedUsernames.includes(newUserName)){
-        //   localStorage.setItem('usernames', JSON.stringify([...storedUsernames, newUserName]));
-        // }
         localStorage.setItem('username', newUserName); 
         window.open('/collection', '_self');
       }
 
       usernameForm.addEventListener('submit', addUserLS);
+
+      document.querySelector("#burger").onclick = () => document.querySelector("#nav-links").classList.toggle('is-active');
     };
 
     window.onload = init;
   </script>
 </head>
 <body>
-  <section id="top">
+  <nav class="navbar has-shadow is-white">
+    <!-- Logo/brand -->
+    <div class="navbar-brand">
+      <a class="navbar-item" href="client">
+        <i class="fas fa-book-open"></i>
+      </a>
+      <a class="navbar-burger" id="burger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </a>
+    </div>
+
+    <div class="navbar-menu" id="nav-links">
+      <div class="navbar-start">
+        <a class="navbar-item has-text-weight-bold" id="User" href="client">
+          User
+        </a>
+
+        <a class="navbar-item is-hoverable" id="Add Book" href="collection">
+          Add Book
+        </a>
+
+        <a class="navbar-item is-hoverable" id="Collection" href="favorites.html">
+          Your Collection
+        </a>
+
+        <a class="navbar-item is-hoverable" id="Community" href="community.html">
+          Community Collections
+        </a>
+      </div> <!-- End navbar -->
+    </div>
+  </nav>
+
+  <div class="columns is-vcentered has-text-white">
+    <div class="column">
+
+      <div class="hero is-large has-background-success p-4">
+        <div class="hero-header">
+          <h1 class="title is-1" style="color: white">
+            Start your book Collection!   
+          </h1>
+          <h2 class="subtitle is-4" style="color: white">
+            Track the books you are, have, or want to read and share them with firends!    
+          </h2>
+        </div>
+
+
+        <!-- Seach area -->
+        <div class="box m-5">
+          <div class="mb-3">
+            <form id="usernameForm" action="/addUserLS" method="post">
+              <label for="username" class="title is-5 m-1 mb-2 has-text-black">Enter a username: </label>
+              <input id="usernameField" type="text" name="usernameField" class="input has-text-black is-small" placeholder="Ex. Bob" title="Enter a username" />
+              <input type="submit" value="Submit" class="button is-primary is-small" />
+            </form>
+
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer p-1 has-background-grey-lighter has-text-dark">
+        <div class="content has-text-centered">
+          <p>
+            Jordan Reeves | jar5937@rit.edu | IGME-430
+          </p>
+        </div>
+      </footer>
+
+    </div>
+  </div>
+
+  <!-- <section id="top">
     <h3>Add to your Book Collection!</h3>
 
     <h4>Enter a username</h4>
@@ -37,8 +108,8 @@
       <input type="submit" value="Submit" />
     </form>
 
-  </section>
-  <section id="content">
-  </section>
+  </section> -->
+  <!-- <section id="content">
+  </section> -->
 </body>
 </html>

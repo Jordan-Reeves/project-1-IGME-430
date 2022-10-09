@@ -52,13 +52,15 @@ const handleGet = (request, response, parsedUrl, params) => {
   } else if (parsedUrl.pathname === '/getBooks') {
     jsonHandler.getBooks(request, response, params);
   } else {
-    jsonHandler.notFound(request, response);
+    htmlHandler.getNotFound(request, response);
   }
 };
 
 const handleHead = (request, response, parsedUrl) => {
   if (parsedUrl.pathname === '/getUsers') {
     jsonHandler.getUsersMeta(request, response);
+  } else if (parsedUrl.pathname === '/getBooks') {
+    jsonHandler.getBooksMeta(request, response);
   } else {
     jsonHandler.notFoundMeta(request, response);
   }
