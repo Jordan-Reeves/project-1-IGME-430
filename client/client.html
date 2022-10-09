@@ -13,8 +13,12 @@
       const addUserLS = (e) => {
         e.preventDefault(); // stops form from sending request on it's own
         const newUserName = usernameForm.querySelector('#usernameField').value;
-        localStorage.setItem('username', newUserName); 
-        window.open('/collection', '_self');
+        if(newUserName.length > 0){
+          localStorage.setItem('username', newUserName); 
+          window.open('/collection', '_self');
+        }else{
+          document.querySelector("#isValid").innerHTML = "Error: Please provide a username";
+        }
       }
 
       usernameForm.addEventListener('submit', addUserLS);
@@ -31,6 +35,7 @@
     <div class="navbar-brand">
       <a class="navbar-item" href="client">
         <i class="fas fa-book-open"></i>
+        <span class="pl-2">Book Collection</span>
       </a>
       <a class="navbar-burger" id="burger">
         <span></span>
@@ -66,7 +71,7 @@
       <div class="hero is-large has-background-success p-4">
         <div class="hero-header">
           <h1 class="title is-1" style="color: white">
-            Start your book Collection!   
+            Start your book collection!   
           </h1>
           <h2 class="subtitle is-4" style="color: white">
             Track the books you are, have, or want to read and share them with firends!    
@@ -77,12 +82,12 @@
         <!-- Seach area -->
         <div class="box m-5">
           <div class="mb-3">
-            <form id="usernameForm" action="/addUserLS" method="post">
-              <label for="username" class="title is-5 m-1 mb-2 has-text-black">Enter a username: </label>
-              <input id="usernameField" type="text" name="usernameField" class="input has-text-black is-small" placeholder="Ex. Bob" title="Enter a username" />
-              <input type="submit" value="Submit" class="button is-primary is-small" />
+            <h2 id="isValid" class="title is-3 has-text-centered has-text-weight-bold has-text-danger"></h2>
+            <label for="username" class="title is-5 mb-2 has-text-black">Enter a username: </label>
+            <form id="usernameForm" action="/addUserLS" method="post" class="columns m-0 mt-2 ">
+              <input id="usernameField" type="text" name="usernameField" class="column is-four-fifths m-0 mr-3 input has-text-black is-small" placeholder="Ex. Bob" title="Enter a username" />
+              <input type="submit" value="Submit" class="column p-0 button is-primary is-small submit-btn" />
             </form>
-
           </div>
         </div>
       </div>
@@ -90,7 +95,7 @@
       <footer class="footer p-1 has-background-grey-lighter has-text-dark">
         <div class="content has-text-centered">
           <p>
-            Jordan Reeves | jar5937@rit.edu | IGME-430
+            Jordan Reeves | jar5927@rit.edu | IGME-430
           </p>
         </div>
       </footer>

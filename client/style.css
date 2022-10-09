@@ -1,16 +1,6 @@
 html, body {
   height: 100%;
   width: 100%;
-
-}
-
-#top {
-  text-align: center;
-  margin: 0 auto;
-}
-
-#top h1 {
-  font-size: 2em;
 }
 
 #status {
@@ -18,28 +8,15 @@ html, body {
   font-size: 2em;
   text-align: center;
 }
-#usernameField{
-  width:85%;
-}
+
 #titleField, #authorField, #notesField, #imageField{
-  width:35%;
+  /* width:35%; */
+}
+
+#bookStatus, #ratingField{
+  width:100%;
+  /* vertical-align: top; */
 }
 label{
   vertical-align: bottom;
-}
-
-
-
-#content {
-  font-size: 2em;
-}
-#content h5 {
-  margin: 0 auto;
-}
-#content ul {
-  margin: 0 10px;
-}
-
-#currentUser {
-  text-align: center;
 }

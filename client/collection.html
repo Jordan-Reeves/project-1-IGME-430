@@ -170,6 +170,7 @@
     <div class="navbar-brand">
       <a class="navbar-item" href="client">
         <i class="fas fa-book-open"></i>
+        <span class="pl-2">Book Collection</span>
       </a>
       <a class="navbar-burger" id="burger">
         <span></span>
@@ -205,7 +206,7 @@
       <div class="hero is-large has-background-success p-4">
         <div class="hero-header">
           <h1 class="title is-1" style="color: white">
-            Add/Update a Book!
+            Add a Book!
           </h1>
           <h2 class="subtitle is-4" style="color: white">
           </h2>
@@ -215,88 +216,70 @@
         <!-- Seach area -->
         <div class="box m-5">
           <div class="mb-3">
-            <h2 id="currentUser" class="title is-3 has-text-weight-bold">Hello </h2>
+            <h2 id="currentUser" class="title is-3 has-text-weight-bold has-text-centered">Hello </h2>
 
             <form id="bookForm" action="/addBook" method="post">
-              <label for="title" class="title is-4 m-1 mb-2 has-text-black">Title: </label>
-              <input id="titleField" type="text" name="title" class="input has-text-black is-small" placeholder="Ex. Black Stallion" title="Enter a book title" />
-              <label for="author" class="title is-4 m-1 mb-2 has-text-black">Author: </label>
-              <input id="authorField" type="text" name="author" class="input has-text-black is-small" placeholder="Ex. Stacy Unknown" title="Enter an author" />
-              <br>
-              <label for="bookStatus" class="title is-4 m-1 mb-2 has-text-black">Book Status: </label>
-              <span class="select has-text-black is-small">
-                <select id="bookStatus" name="bookStatus">
-                  <option value="reading">Reading</option>
-                  <option value="finished">Finished</option>
-                  <option value="tbr">tbr</option>
-                </select>
-              </span>
-              <label for="notes" class="title is-4 m-1 mb-2 has-text-black">Notes: </label>
-              <input id="notesField" type="text" name="notes" class="input has-text-black is-small" placeholder="Ex. I thought this book was..." title="Enter any notes" />
-              <label for="rating" class="title is-4 m-1 mb-2 has-text-black">Rating: </label>
-              <span class="select has-text-black is-small">
-                <select id="ratingField" name="rating">
-                  <option value="0">0</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                </select>
-              </span>
-              <br>
-              <label for="image" class="title is-4 m-1 mb-2 has-text-black">Image URL: </label>
-              <input id="imageField" type="text" name="image" class="input has-text-black is-small" placeholder="Ex. Stacy Unknown" title="Enter a url to an image" />
-              <input type="submit" value="Submit" class="button is-primary is-small" />
+              <div class="columns m-0">
+                <label for="title" class="title is-4 m-1 mb-2 has-text-black">Title: </label>
+                <input id="titleField" type="text" name="title" class="column is-two-fifths mr-3 input has-text-black is-small" placeholder="Ex. Black Stallion" title="Enter a book title" />
+                <label for="author" class=" title is-4 m-1 mb-2 has-text-black">Author: </label>
+                <input id="authorField" type="text" name="author" class="column is-two-fifths input has-text-black is-small" placeholder="Ex. Stacy Unknown" title="Enter an author" />
+              </div>
+
+              <div class="columns m-0">
+                <label for="bookStatus" class="title is-4 m-1 mb-2 has-text-black">Book Status: </label>
+                <div class="select mr-3 has-text-black is-small">
+                  <select id="bookStatus" name="bookStatus" class="column is-2 ">
+                    <option value="reading">Reading</option>
+                    <option value="finished">Finished</option>
+                    <option value="tbr">tbr</option>
+                  </select>
+                </div>
+                <label for="notes" class="title is-4 m-1 mb-2 has-text-black">Notes: </label>
+                <input id="notesField" type="text" name="notes" class="column is-7 input has-text-black is-small" placeholder="Ex. I thought this book was..." title="Enter any notes" />
+              </div>
+
+              <div class="columns m-0">
+                <label for="rating" class="title is-4 m-1 mb-2 has-text-black">Rating: </label>
+                  <span class="select mr-3 has-text-black is-small">
+                    <select id="ratingField" name="rating" class="column is-3">
+                      <option value="0">0</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                    </select>
+                  </span>
+                  <br>
+                  <label for="image" class="title is-4 m-1 mb-2 has-text-black">Image URL: </label>
+                  <input id="imageField" type="text" name="image" class="column is-7 mr-3 input has-text-black is-small" placeholder="https://some_image" title="Enter a url to an image" />
+                  <input type="submit" value="Submit" class="button is-primary is-small" />
+                </div>
             </form>
-            <br>
+            
 
-            <!-- <h2 id="currentUser">Current User: </h2> -->
 
-            <section id="top">
-              <!-- <h3>Add books to your collection</h3>
-              <form id="bookForm" action="/addBook" method="post">
-                <label for="title">Title: </label>
-                <input id="titleField" type="text" name="title" />
-                <label for="author">Author: </label>
-                <input id="authorField" type="text" name="author" />
-                <label for="bookStatus">Book Status: </label>
-                <select id="bookStatus" name="bookStatus">
-                  <option value="reading">Reading</option>
-                  <option value="finished">Finished</option>
-                  <option value="tbr">tbr</option>
-                </select>
+            <section class="has-text-centered">
+    
+         
+              <form id="viewForm" action="/getBooks" method="post">
+                <label for="viewForm" class="title is-5 m-1 mb-2 has-text-black">View Your Collection: </label>
                 <br>
-                <label for="notes">Notes: </label>
-                <input id="notesField" type="text" name="notes" />
-                <label for="rating">Rating: </label>
-                <select id="ratingField" name="rating">
-                  <option value="0">0</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                </select>
-                <label for="image">Image URL: </label>
-                <input id="imageField" type="text" name="image" />
-                <input type="submit" value="Submit" />
-              </form> -->
-          
-              <!-- <p>Or</p> -->
-          
-              <h3>View your collection</h3>
-              <form id="viewForm" action="/getBooks" method="get">
-                <input type="submit" value="View Collection" />
+                <input type="submit" value="View Collection" class="button is-primary is-small" />
               </form>
           
-              <p>Or</p>
-          
-              <h3>View all users collections</h3>
-              <form id="allCollections" action="/getUsers" method="get">
-                <input type="submit" value="View All Collections" />
+              <p class="title is-5 m-1 mb-2 has-text-black">Or</p>
+
+
+              <form id="allCollections" action="/getUsers" method="post">
+                <label for="allCollections" class="title is-5 m-1 mb-2 has-text-black">View all users collection: </label>
+                <br>
+                <input type="submit" value="View All Collections" class="button is-primary is-small" />
               </form>
+
             </section>
+
             <section id="status">
             </section>
             <section id="content">
@@ -308,7 +291,7 @@
       <footer class="footer p-1 has-background-grey-lighter has-text-dark">
         <div class="content has-text-centered">
           <p>
-            Jordan Reeves | jar5937@rit.edu | IGME-430
+            Jordan Reeves | jar5927@rit.edu | IGME-430
           </p>
         </div>
       </footer>

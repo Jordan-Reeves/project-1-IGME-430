@@ -30,7 +30,7 @@ const getUsersMeta = (request, response) => {
 
 const addBook = (request, response, body) => {
   const responseJSON = {
-    message: 'Username and title is required.',
+    message: 'Title is required.',
   };
 
   if (!body.username || !body.title) {
@@ -101,14 +101,13 @@ const notFoundMeta = (request, response) => {
 
 const getBooks = (request, response, params) => {
   const responseJSON = {
-    message: 'Missing username query parameter',
+    message: 'Missing username query parameter or username does not exist',
   };
 
   // if the request does not contain a username=__ query parameter
   // or the username isn't in the users
-  if (!params.username) {
-    // const resTextString = JSON.stringify(responseJSON.message);
-    return respondJSON(request, response, 401, responseJSON, 'application/json');
+  if (!params.username || !users[params.username]) {
+    return respondJSON(request, response, 400, responseJSON, 'application/json');
   }
 
   responseJSON.message = 'You have successfully viewed your books';
