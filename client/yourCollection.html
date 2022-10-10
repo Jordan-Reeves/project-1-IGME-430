@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Add or View Book Collector</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" type="text/css" href="/style.css">
+  
+  <script>
+    const handleResponse = async (response, parseResponse) => {
+      const status = document.querySelector('#status');
+      const bookTableBody = document.querySelector('#bookBody');
+      
+      switch(response.status) {
+        case 200:
+          status.innerHTML = `<b>Success</b>`;
+          break;
+        case 201:
+          status.innerHTML = '<b>Created</b>';
+          break;
+        case 204:
+          status.innerHTML = '<b>Updated (No Content)</b>';
+          return;
+        case 400:
+          status.innerHTML = `<b>Bad Request</b>`;
+          break;
+        case 404:
+          status.innerHTML = `<b>Not Found</b>`;
+          break;
+        default: 
+          status.innerHTML = `Error code not implemented by client.`;
+          break;
+      }
+
+      if(parseResponse) {
+        //Parse the response to json. This is an async function, so we will await it.
+        let obj = await response.json();
+        console.log(obj);
+        bookTableBody.innerHTML = '';
+        if(obj.books){
+          //To display the data easily, we will just stringify it again and display it.
+          obj.books.forEach(book => {
+            let detailsRow = `<tr>`;
+            detailsRow += `
+                  <td class="titleImage">
+                    <img src="${book.imageURL }" class="bookImg mr-3">
+                    <p class="bookTitle">${book.title}</p>
+                  </td>
+                  <td>${book.author}</td>
+                  <td>${book.bookStatus}</td>
+                  <td class="bookRating">${book.rating}</td>
+                  <td>${book.notes}</td>`;
+            detailsRow += `</tr>`;
+            bookTableBody.innerHTML += detailsRow;
+          })
+
+        }
+        else if(obj.users){
+          //To display the data easily, we will just stringify it again and display it.
+          let jsonString = JSON.stringify(obj.users);
+          console.log(jsonString);
+          //content.innerHTML += `<p>${jsonString}</p>`;
+          for (const [user, booksKey] of Object.entries(obj.users)) {
+            content.innerHTML += `<h5>User: ${user}</h5>`;
+            for (const [booksObj, array] of Object.entries(booksKey)) {
+              array.forEach(book => {
+                content.innerHTML += `<h5>${book.title}</h5>`;
+                let detailsList = `<ul>`;
+                detailsList += `<li>Author: ${book.author}</li>`;
+                detailsList += `<li>Status: ${book.bookStatus}</li>`;
+                detailsList += `<li>Notes: ${book.notes}</li>`;
+                detailsList += `<li>Rating: ${book.rating} star(s)</li>`;
+                detailsList += `<li>Image: <br><img src=${book.imageURL}></li>`;
+                detailsList += `</ul>`;
+                content.innerHTML += detailsList;
+              })
+            }
+          }
+       }
+        else if(obj.message){
+           status.innerHTML += `<p>Message: ${obj.message}</p>`;
+        }
+        else{
+          content.innerHTML +="You currently have no books";
+        }
+        
+     }
+    };
+
+    const sendPost = async (usernameForm) => {
+      const title = bookForm.querySelector('#titleField').value;
+      const author = bookForm.querySelector('#authorField').value;
+      const bookStatus = bookForm.querySelector('#bookStatus').value;
+      const notes = bookForm.querySelector('#notesField').value;
+      const rating = bookForm.querySelector('#ratingField').value;
+      const imageURL = bookForm.querySelector('#imageField').value;
+
+      const bookAction = bookForm.getAttribute('action');
+      const bookMethod = bookForm.getAttribute('method');
+
+      const name = localStorage.getItem("username");
+
+      const formData = `username=${name}&title=${title}&author=${author}&bookStatus=${bookStatus}&notes=${notes}&rating=${rating}&imageURL=${imageURL}`;
+
+      const response = await fetch(bookAction, {
+        method: bookMethod, // 'POST'
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: formData,
+      });
+
+      handleResponse(response, true);
+
+    };
+
+     //function to send request. This is marked as async since we will use await.
+    const getData = async (url) => {
+
+      //Await our fetch response. Go to the URL, use the right method, and attach the headers.
+      let response = await fetch(url, {
+        method: 'get',
+        headers: {
+            'Accept': 'application/json'
+        },
+      });
+
+       handleResponse(response, true);
+    };
+
+
+    const init = () => {
+      const name = localStorage.getItem("username");
+      const currentUser = document.querySelector('#currentUser');
+      // currentUser.innerHTML += name + "!";
+
+      if(name){
+        currentUser.innerHTML += name + "'s book collection";
+      } else{
+        currentUser.classList.add("has-text-danger");
+        currentUser.innerHTML = "Please go back to user and provide a username";
+      }
+
+      const getBooks = () => {
+        // e.preventDefault();
+        const name = localStorage.getItem("username");
+        const url = `/getBooks?username=${name}`;
+        getData(url);
+        return false;
+      }
+
+      const getUsers = (e) => {
+        e.preventDefault();
+        const url = `/getUsers`;
+        getData(url);
+        return false;
+      }
+
+      getBooks();
+      
+      document.querySelector("#burger").onclick = () => document.querySelector("#nav-links").classList.toggle('is-active');
+
+    };
+
+    window.onload = init;
+  </script>
+</head>
+<body>
+  <nav class="navbar has-shadow is-white">
+    <!-- Logo/brand -->
+    <div class="navbar-brand">
+      <a class="navbar-item" href="client">
+        <i class="fas fa-book-open"></i>
+        <span class="pl-2">Book Collection</span>
+      </a>
+      <a class="navbar-burger" id="burger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </a>
+    </div>
+
+    <div class="navbar-menu" id="nav-links">
+      <div class="navbar-start">
+        <a class="navbar-item" id="User" href="client">
+          User
+        </a>
+
+        <a class="navbar-item is-hoverable" id="Add Book" href="addBooksPage">
+          Add Book
+        </a>
+
+        <a class="navbar-item is-hoverable has-text-weight-bold" id="Collection" href="yourCollection">
+          Your Collection
+        </a>
+
+        <a class="navbar-item is-hoverable" id="Community" href="community.html">
+          Community Collections
+        </a>
+      </div> <!-- End navbar -->
+    </div>
+  </nav>
+
+  <div class="columns is-vcentered has-text-white">
+    <div class="column">
+
+      <div class="hero is-large has-background-success p-4">
+        <div class="hero-header">
+          <h1 class="title is-1" style="color: white">
+            Your Collection!
+          </h1>
+          <h2 class="subtitle is-4" style="color: white">
+          </h2>
+        </div>
+
+
+        <!-- Collections -->
+        <div class="box m-5">
+          <div class="mb-3">
+            <h2 id="currentUser" class="title is-3 has-text-weight-bold has-text-centered"></h2>  
+            
+            <!-- <table class="bookTable table is-striped is-hoverable">
+              <thead>
+                <tr>  
+                  <th>Title</th>
+                  <th>Author</th>
+                  <th>Status</th>
+                  <th>Rating</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="titleImage">
+                    <img src="https://g.christianbook.com/dg/product/cbd/f450/813438.jpg" class="bookImg mr-3">
+                    <p class="bookTitle">Black Stallion</p>
+                  </td>
+                  <td>Walter Farley</td>
+                  <td>Finished</td>
+                  <td class="bookRating">5</td>
+                  <td>Very good book</td>
+                </tr> 
+                
+              </tbody>
+            </table> -->
+
+            <section id="status">
+            </section>
+
+            <section id="content">
+              <table class="bookTable table is-bordered is-striped is-hoverable">
+                <thead>
+                  <tr>  
+                    <th class="titleImage">Title</th>
+                    <th>Author</th>
+                    <th>Status</th>
+                    <th class="bookRating">Rating</th>
+                    <th>Notes</th>
+                  </tr>
+                </thead>
+                <tbody id="bookBody">
+                  <tr>
+                    <td>
+                      <img src="https://g.christianbook.com/dg/product/cbd/f450/813438.jpg" class="bookImg mr-3">
+                      <p class="bookTitle">Black Stallion</p>
+                    </td>
+                    <td>Walter Farley</td>
+                    <td>Finished</td>
+                    <td>5</td>
+                    <td>Very good book</td>
+                  </tr> 
+                  
+                </tbody>
+              </table>
+            </section>
+          </div>
+        </div>
+      </div>
+      
+      <footer class="footer p-1 has-background-grey-lighter has-text-dark">
+        <div class="content has-text-centered">
+          <p>
+            Jordan Reeves | jar5927@rit.edu | IGME-430
+          </p>
+        </div>
+      </footer>
+
+    </div>
+
+</body>
+</html>

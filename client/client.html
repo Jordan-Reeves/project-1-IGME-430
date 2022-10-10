@@ -9,19 +9,22 @@
   <script>
     const init = () => {
       const usernameForm = document.querySelector('#usernameForm');
+      const name = localStorage.getItem("username");
+      document.querySelector("#currentUser").innerHTML += name;
       
       const addUserLS = (e) => {
         e.preventDefault(); // stops form from sending request on it's own
         const newUserName = usernameForm.querySelector('#usernameField').value;
         if(newUserName.length > 0){
           localStorage.setItem('username', newUserName); 
-          window.open('/collection', '_self');
+          window.open('/addBooksPage', '_self');
         }else{
           document.querySelector("#isValid").innerHTML = "Error: Please provide a username";
         }
       }
 
       usernameForm.addEventListener('submit', addUserLS);
+
 
       document.querySelector("#burger").onclick = () => document.querySelector("#nav-links").classList.toggle('is-active');
     };
@@ -50,11 +53,11 @@
           User
         </a>
 
-        <a class="navbar-item is-hoverable" id="Add Book" href="collection">
+        <a class="navbar-item is-hoverable" id="Add Book" href="addBooksPage">
           Add Book
         </a>
 
-        <a class="navbar-item is-hoverable" id="Collection" href="favorites.html">
+        <a class="navbar-item is-hoverable" id="Collection" href="yourCollection">
           Your Collection
         </a>
 
@@ -83,6 +86,7 @@
         <div class="box m-5">
           <div class="mb-3">
             <h2 id="isValid" class="title is-3 has-text-centered has-text-weight-bold has-text-danger"></h2>
+            <h2 id="currentUser" class="title is-5 mb-2 has-text-black">Current User: </h2>
             <label for="username" class="title is-5 mb-2 has-text-black">Enter a username: </label>
             <form id="usernameForm" action="/addUserLS" method="post" class="columns m-0 mt-2 ">
               <input id="usernameField" type="text" name="usernameField" class="column is-four-fifths m-0 mr-3 input has-text-black is-small" placeholder="Ex. Bob" title="Enter a username" />

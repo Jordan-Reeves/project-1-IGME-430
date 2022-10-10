@@ -9,73 +9,88 @@
   <script>
     const handleResponse = async (response, parseResponse) => {
       const status = document.querySelector('#status');
+      const viewCollections = document.querySelector("#viewCollections");
+      const viewCollForms = `<section id="viewCollections" class="has-text-centered mt-5">
+                              <p class="title is-5 m-1 has-text-black">View Your Collection: </p>
+                              <a href="yourCollection" class="button is-primary is-small mt-2"/>View Collection</a>
+
+                              <p class="title is-5 m-3 mb-4 has-text-black">Or</p>
+
+                              <p class="title is-5 m-1 has-text-black">View Community Collections: </p>
+                              <a href="communityCollections" class="button is-primary is-small mt-2"/>View Community Collections</a>
+                            </section>`;
       
+      status.innerHTML = "";
+
       switch(response.status) {
         case 200:
-          status.innerHTML = `<b>Success</b>`;
+          status.innerHTML += `<b>Success</b>`;
           break;
         case 201:
-          status.innerHTML = '<b>Created</b>';
+           status.innerHTML += '<b>Created</b>';
           break;
         case 204:
-          status.innerHTML = '<b>Updated (No Content)</b>';
+          status.innerHTML += '<b>Updated (No Content)</b>';
           return;
         case 400:
-          status.innerHTML = `<b>Bad Request</b>`;
+          status.innerHTML += `<b>Bad Request</b>`;
           break;
         case 404:
-          status.innerHTML = `<b>Not Found</b>`;
+          status.innerHTML += `<b>Not Found</b>`;
           break;
         default: 
-          status.innerHTML = `Error code not implemented by client.`;
+          status.innerHTML += `Error code not implemented by client.`;
           break;
       }
-
+      
       if(parseResponse) {
         //Parse the response to json. This is an async function, so we will await it.
         let obj = await response.json();
         console.log(obj);
-        content.innerHTML = '';
-        if(obj.books){
-          //To display the data easily, we will just stringify it again and display it.
-          //let jsonString = JSON.stringify(obj.books);
-          obj.books.forEach(book => {
-            content.innerHTML += `<h5>${book.title}</h5>`;
-            let detailsList = `<ul>`;
-            detailsList += `<li>Author: ${book.author}</li>`;
-            detailsList += `<li>Status: ${book.bookStatus}</li>`;
-            detailsList += `<li>Notes: ${book.notes}</li>`;
-            detailsList += `<li>Rating: ${book.rating} star(s)</li>`;
-            detailsList += `<li>Image: <br><img src=${book.imageURL}></li>`;
-            detailsList += `</ul>`;
-            content.innerHTML += detailsList;
-          })
+      //   if(obj.books){
+      //     //To display the data easily, we will just stringify it again and display it.
+      //     //let jsonString = JSON.stringify(obj.books);
+      //     obj.books.forEach(book => {
+      //       content.innerHTML += `<h5>${book.title}</h5>`;
+      //       let detailsList = `<ul>`;
+      //       detailsList += `<li>Author: ${book.author}</li>`;
+      //       detailsList += `<li>Status: ${book.bookStatus}</li>`;
+      //       detailsList += `<li>Notes: ${book.notes}</li>`;
+      //       detailsList += `<li>Rating: ${book.rating} star(s)</li>`;
+      //       detailsList += `<li>Image: <br><img src=${book.imageURL}></li>`;
+      //       detailsList += `</ul>`;
+      //       content.innerHTML += detailsList;
+      //     })
 
-        }
-        else if(obj.users){
-          //To display the data easily, we will just stringify it again and display it.
-          let jsonString = JSON.stringify(obj.users);
-          console.log(jsonString);
-          //content.innerHTML += `<p>${jsonString}</p>`;
-          for (const [user, booksKey] of Object.entries(obj.users)) {
-            content.innerHTML += `<h5>User: ${user}</h5>`;
-            for (const [booksObj, array] of Object.entries(booksKey)) {
-              array.forEach(book => {
-                content.innerHTML += `<h5>${book.title}</h5>`;
-                let detailsList = `<ul>`;
-                detailsList += `<li>Author: ${book.author}</li>`;
-                detailsList += `<li>Status: ${book.bookStatus}</li>`;
-                detailsList += `<li>Notes: ${book.notes}</li>`;
-                detailsList += `<li>Rating: ${book.rating} star(s)</li>`;
-                detailsList += `<li>Image: <br><img src=${book.imageURL}></li>`;
-                detailsList += `</ul>`;
-                content.innerHTML += detailsList;
-              })
-            }
-          }
-       }
-        else if(obj.message){
+      //   }
+      //   else if(obj.users){
+      //     //To display the data easily, we will just stringify it again and display it.
+      //     let jsonString = JSON.stringify(obj.users);
+      //     console.log(jsonString);
+      //     //content.innerHTML += `<p>${jsonString}</p>`;
+      //     for (const [user, booksKey] of Object.entries(obj.users)) {
+      //       content.innerHTML += `<h5>User: ${user}</h5>`;
+      //       for (const [booksObj, array] of Object.entries(booksKey)) {
+      //         array.forEach(book => {
+      //           content.innerHTML += `<h5>${book.title}</h5>`;
+      //           let detailsList = `<ul>`;
+      //           detailsList += `<li>Author: ${book.author}</li>`;
+      //           detailsList += `<li>Status: ${book.bookStatus}</li>`;
+      //           detailsList += `<li>Notes: ${book.notes}</li>`;
+      //           detailsList += `<li>Rating: ${book.rating} star(s)</li>`;
+      //           detailsList += `<li>Image: <br><img src=${book.imageURL}></li>`;
+      //           detailsList += `</ul>`;
+      //           content.innerHTML += detailsList;
+      //         })
+      //       }
+      //     }
+      //  }
+      //   else 
+        if(obj.message){
            status.innerHTML += `<p>Message: ${obj.message}</p>`;
+           if(response.status !== 400){
+            status.innerHTML += viewCollForms;
+           }
         }
         
      }
@@ -109,28 +124,37 @@
 
     };
 
-     //function to send request. This is marked as async since we will use await.
-    const getData = async (url) => {
+    //  //function to send request. This is marked as async since we will use await.
+    // const getData = async (url) => {
 
-      //Await our fetch response. Go to the URL, use the right method, and attach the headers.
-      let response = await fetch(url, {
-        method: 'get',
-        headers: {
-            'Accept': 'application/json'
-        },
-      });
+    //   //Await our fetch response. Go to the URL, use the right method, and attach the headers.
+    //   let response = await fetch(url, {
+    //     method: 'get',
+    //     headers: {
+    //         'Accept': 'application/json'
+    //     },
+    //   });
 
-       handleResponse(response, true);
-    };
+    //    handleResponse(response, true);
+    // };
 
 
     const init = () => {
       const bookForm = document.querySelector('#bookForm');
-      const viewForm = document.querySelector('#viewForm');
-      const allCollections = document.querySelector('#allCollections');
       const name = localStorage.getItem("username");
       const currentUser = document.querySelector('#currentUser');
-      currentUser.innerHTML += name + "!";
+
+      // currentUser.innerHTML += name + "!";
+      if(name){
+        currentUser.innerHTML += name + "!";
+      } else{
+        currentUser.classList.add("has-text-danger");
+        var elements = bookForm.elements;
+        for (var i = 0, len = elements.length; i < len; ++i) {
+            elements[i].disabled = true;
+        }
+        currentUser.innerHTML = "Please go back to user and provide a username";
+      }
       
       const addBook = (e) => {
         e.preventDefault();
@@ -138,24 +162,22 @@
         return false;
       }
 
-      const getBooks = (e) => {
-        e.preventDefault();
-        const name = localStorage.getItem("username");
-        const url = `/getBooks?username=${name}`;
-        getData(url);
-        return false;
-      }
+      // const getBooks = (e) => {
+      //   e.preventDefault();
+      //   const name = localStorage.getItem("username");
+      //   const url = `/getBooks?username=${name}`;
+      //   getData(url);
+      //   return false;
+      // }
 
-      const getUsers = (e) => {
-        e.preventDefault();
-        const url = `/getUsers`;
-        getData(url);
-        return false;
-      }
+      // const getUsers = (e) => {
+      //   e.preventDefault();
+      //   const url = `/getUsers`;
+      //   getData(url);
+      //   return false;
+      // }
       
       bookForm.addEventListener('submit', addBook);
-      viewForm.addEventListener('submit', getBooks);
-      allCollections.addEventListener('submit', getUsers);
 
       document.querySelector("#burger").onclick = () => document.querySelector("#nav-links").classList.toggle('is-active');
 
@@ -185,11 +207,11 @@
           User
         </a>
 
-        <a class="navbar-item is-hoverable has-text-weight-bold" id="Add Book" href="collection">
+        <a class="navbar-item is-hoverable has-text-weight-bold" id="Add Book" href="addBooksPage">
           Add Book
         </a>
 
-        <a class="navbar-item is-hoverable" id="Collection" href="favorites.html">
+        <a class="navbar-item is-hoverable" id="Collection" href="yourCollection">
           Your Collection
         </a>
 
@@ -213,7 +235,7 @@
         </div>
 
 
-        <!-- Seach area -->
+        <!-- Form area -->
         <div class="box m-5">
           <div class="mb-3">
             <h2 id="currentUser" class="title is-3 has-text-weight-bold has-text-centered">Hello </h2>
@@ -254,33 +276,14 @@
                   <br>
                   <label for="image" class="title is-4 m-1 mb-2 has-text-black">Image URL: </label>
                   <input id="imageField" type="text" name="image" class="column is-7 mr-3 input has-text-black is-small" placeholder="https://some_image" title="Enter a url to an image" />
-                  <input type="submit" value="Submit" class="button is-primary is-small" />
+                  <input id="submitBook" type="submit" value="Submit" class="button is-primary is-small" />
                 </div>
             </form>
             
 
 
-            <section class="has-text-centered">
-    
-         
-              <form id="viewForm" action="/getBooks" method="post">
-                <label for="viewForm" class="title is-5 m-1 mb-2 has-text-black">View Your Collection: </label>
-                <br>
-                <input type="submit" value="View Collection" class="button is-primary is-small" />
-              </form>
-          
-              <p class="title is-5 m-1 mb-2 has-text-black">Or</p>
-
-
-              <form id="allCollections" action="/getUsers" method="post">
-                <label for="allCollections" class="title is-5 m-1 mb-2 has-text-black">View all users collection: </label>
-                <br>
-                <input type="submit" value="View All Collections" class="button is-primary is-small" />
-              </form>
-
-            </section>
-
-            <section id="status">
+            <section id="status" class="mt-2">
+              
             </section>
             <section id="content">
             </section>

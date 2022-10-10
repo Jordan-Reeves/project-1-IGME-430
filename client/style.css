@@ -4,13 +4,9 @@ html, body {
 }
 
 #status {
-  margin-top: 60px;
+  /* margin-top: 60px; */
   font-size: 2em;
   text-align: center;
-}
-
-#titleField, #authorField, #notesField, #imageField{
-  /* width:35%; */
 }
 
 #bookStatus, #ratingField{
@@ -19,4 +15,20 @@ html, body {
 }
 label{
   vertical-align: bottom;
+}
+
+.bookTable{
+  width: 100%;
+  margin: 0 auto;
+  max-width: 1024px;
+}
+.bookImg{
+  max-height: 150px;
+  float:left;
+}
+.titleImage{
+  min-width: 200px;
+}
+.bookRating{
+  width: 10px;
 }

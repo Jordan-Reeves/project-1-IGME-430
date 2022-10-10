@@ -1,7 +1,8 @@
 const fs = require('fs'); // pull in the file system module
 
 const index = fs.readFileSync(`${__dirname}/../client/client.html`);
-const collection = fs.readFileSync(`${__dirname}/../client/collection.html`);
+const addBooksPage = fs.readFileSync(`${__dirname}/../client/addBooksPage.html`);
+const yourCollection = fs.readFileSync(`${__dirname}/../client/yourCollection.html`);
 const css = fs.readFileSync(`${__dirname}/../client/style.css`);
 const notFound = fs.readFileSync(`${__dirname}/../client/notFound.html`);
 
@@ -11,9 +12,9 @@ const getIndex = (request, response) => {
   response.end();
 };
 
-const getCollection = (request, response) => {
+const getAddBooksPage = (request, response) => {
   response.writeHead(200, { 'Content-Type': 'text/html' });
-  response.write(collection);
+  response.write(addBooksPage);
   response.end();
 };
 
@@ -29,9 +30,16 @@ const getNotFound = (request, response) => {
   response.end();
 };
 
+const getYourCollection = (request, response) => {
+  response.writeHead(200, { 'Content-Type': 'text/html' });
+  response.write(yourCollection);
+  response.end();
+};
+
 module.exports = {
   getIndex,
-  getCollection,
+  getAddBooksPage,
   getCSS,
   getNotFound,
+  getYourCollection,
 };

@@ -49,11 +49,13 @@ const addBook = (request, response, body) => {
   const oldBooks = users[body.username].books;
   const newBook = {
     title: body.title,
-    author: body.author ? body.author : 'not provided',
+    author: body.author,// ? body.author : 'Not provided',
     bookStatus: body.bookStatus,
     notes: body.notes,
     rating: body.rating,
-    imageURL: body.imageURL,
+    // imageURL: body.imageURL,
+    imageURl: body.imageURL ? body.imageURL : "https://via.placeholder.com/200x300?text=No+Cover+Provided",
+
   };
 
   const bookExists = oldBooks.find((book) => book.title === newBook.title);
@@ -101,11 +103,10 @@ const notFoundMeta = (request, response) => {
 
 const getBooks = (request, response, params) => {
   const responseJSON = {
-    message: 'Missing username query parameter or username does not exist',
+    message: 'User has no books.',
   };
 
-  // if the request does not contain a username=__ query parameter
-  // or the username isn't in the users
+  // if the user has no books
   if (!params.username || !users[params.username]) {
     return respondJSON(request, response, 400, responseJSON, 'application/json');
   }
