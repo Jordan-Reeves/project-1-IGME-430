@@ -53,8 +53,7 @@ const addBook = (request, response, body) => {
     bookStatus: body.bookStatus,
     notes: body.notes,
     rating: body.rating,
-    // imageURL: body.imageURL,
-    imageURl: body.imageURL ? body.imageURL : "https://via.placeholder.com/200x300?text=No+Cover+Provided",
+    imageURL: body.imageURL ? body.imageURL : 'https://via.placeholder.com/200x300',
 
   };
 

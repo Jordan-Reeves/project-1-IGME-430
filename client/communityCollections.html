@@ -7,16 +7,33 @@
   <link rel="stylesheet" type="text/css" href="/style.css">
   
   <script>
+    const makeTable = (booksKey) => {
+      let data = "";
+      for (const [booksObj, array] of Object.entries(booksKey)) { 
+        array.forEach(book => {
+          let detailsRow = `<tr>
+            <td>
+              <img src="${book.imageURL}" class="bookImg mr-3">
+              <p class="bookTitle">${book.title}</p>
+            </td>
+            <td>${book.author}</td>
+            <td>${book.bookStatus}</td>
+            <td class="bookRating">${book.rating}</td>
+            <td>${book.notes}</td>
+          </tr>`;
+          data += detailsRow;
+        });
+      }
+      return data;
+    }
     const handleResponse = async (response, parseResponse) => {
       const status = document.querySelector('#status');
       const bookTableBody = document.querySelector('#bookBody');
+      const content = document.querySelector('#content');
       
       switch(response.status) {
-        case 200:
-          status.innerHTML = `<b>Success</b>`;
-          break;
-        case 201:
-          status.innerHTML = '<b>Created</b>';
+        case 200: //success don't need to say though
+          status.innerHTML = `<b></b>`;
           break;
         case 204:
           status.innerHTML = '<b>Updated (No Content)</b>';
@@ -36,46 +53,34 @@
         //Parse the response to json. This is an async function, so we will await it.
         let obj = await response.json();
         console.log(obj);
-        bookTableBody.innerHTML = '';
-        if(obj.books){
-          //To display the data easily, we will just stringify it again and display it.
-          obj.books.forEach(book => {
-            let detailsRow = `<tr>`;
-            detailsRow += `
-                  <td>
-                    <img src="${book.imageURL}" class="bookImg mr-3">
-                    <p class="bookTitle">${book.title}</p>
-                  </td>
-                  <td>${book.author}</td>
-                  <td>${book.bookStatus}</td>
-                  <td class="bookRating">${book.rating}</td>
-                  <td>${book.notes}</td>`;
-            detailsRow += `</tr>`;
-            bookTableBody.innerHTML += detailsRow;
-          })
+        content.innerHTML = '';
 
-        }
-        else if(obj.users){
+         if(obj.users){
           //To display the data easily, we will just stringify it again and display it.
           let jsonString = JSON.stringify(obj.users);
           console.log(jsonString);
-          //content.innerHTML += `<p>${jsonString}</p>`;
-          for (const [user, booksKey] of Object.entries(obj.users)) {
-            content.innerHTML += `<h5>User: ${user}</h5>`;
-            for (const [booksObj, array] of Object.entries(booksKey)) {
-              array.forEach(book => {
-                content.innerHTML += `<h5>${book.title}</h5>`;
-                let detailsList = `<ul>`;
-                detailsList += `<li>Author: ${book.author}</li>`;
-                detailsList += `<li>Status: ${book.bookStatus}</li>`;
-                detailsList += `<li>Notes: ${book.notes}</li>`;
-                detailsList += `<li>Rating: ${book.rating} star(s)</li>`;
-                detailsList += `<li>Image: <br><img src=${book.imageURL}></li>`;
-                detailsList += `</ul>`;
-                content.innerHTML += detailsList;
-              })
-            }
+          if(Object.keys(obj.users).length == 0){
+            status.innerHTML += `<p>No users have started a collection. Be the first!<p>`;
           }
+          for (const [user, booksKey] of Object.entries(obj.users)) {
+            const dataRows = makeTable(booksKey);
+            content.innerHTML += `
+              <h5 class="title is-5 mb-2 has-text-weight-bold">${user}'s Book Collection:</h5>
+              <table class="bookTable table is-bordered is-striped is-hoverable">
+                <thead>
+                  <tr>  
+                    <th class="titleImage">Title</th>
+                    <th>Author</th>
+                    <th>Status</th>
+                    <th class="bookRating">Rating</th>
+                    <th>Notes</th>
+                  </tr>
+                </thead>
+                <tbody class="bookBody">
+                  ${dataRows}
+                </tbody>
+              </table>`;
+          }        
        }
         else if(obj.message){
            status.innerHTML += `<p>Message: ${obj.message}</p>`;
@@ -83,9 +88,9 @@
         else{
           content.innerHTML +="You currently have no books";
         }
-        
-     }
-    };
+      } 
+    }
+    
 
     const sendPost = async (usernameForm) => {
       const title = bookForm.querySelector('#titleField').value;
@@ -133,14 +138,6 @@
     const init = () => {
       const name = localStorage.getItem("username");
       const currentUser = document.querySelector('#currentUser');
-      // currentUser.innerHTML += name + "!";
-
-      if(name){
-        currentUser.innerHTML += name + "'s book collection";
-      } else{
-        currentUser.classList.add("has-text-danger");
-        currentUser.innerHTML = "Please go back to user and provide a username";
-      }
 
       const getBooks = () => {
         // e.preventDefault();
@@ -150,14 +147,14 @@
         return false;
       }
 
-      const getUsers = (e) => {
-        e.preventDefault();
+      const getUsers = () => {
+        // e.preventDefault();
         const url = `/getUsers`;
         getData(url);
         return false;
       }
 
-      getBooks();
+      getUsers();
       
       document.querySelector("#burger").onclick = () => document.querySelector("#nav-links").classList.toggle('is-active');
 
@@ -191,11 +188,11 @@
           Add Book
         </a>
 
-        <a class="navbar-item is-hoverable has-text-weight-bold" id="Collection" href="yourCollection">
+        <a class="navbar-item is-hoverable" id="Collection" href="yourCollection">
           Your Collection
         </a>
 
-        <a class="navbar-item is-hoverable" id="Community" href="communityCollections">
+        <a class="navbar-item is-hoverable has-text-weight-bold" id="Community" href="communityCollections">
           Community Collections
         </a>
       </div> <!-- End navbar -->
@@ -208,7 +205,7 @@
       <div class="hero is-large has-background-success p-4">
         <div class="hero-header">
           <h1 class="title is-1" style="color: white">
-            Your Collection!
+            Community Collections!
           </h1>
           <h2 class="subtitle is-4" style="color: white">
           </h2>
@@ -218,7 +215,7 @@
         <!-- Collections -->
         <div class="box m-5">
           <div class="mb-3">
-            <h2 id="currentUser" class="title is-3 has-text-weight-bold has-text-centered"></h2>  
+            <h2 class="title is-3 has-text-weight-bold has-text-centered">Browse everyones book collections</h2>  
             
             <!-- <table class="bookTable table is-striped is-hoverable">
               <thead>
@@ -249,19 +246,6 @@
             </section>
 
             <section id="content">
-              <table class="bookTable table is-bordered is-striped is-hoverable">
-                <thead>
-                  <tr>  
-                    <th class="titleImage">Title</th>
-                    <th>Author</th>
-                    <th>Status</th>
-                    <th class="bookRating">Rating</th>
-                    <th>Notes</th>
-                  </tr>
-                </thead>
-                <tbody id="bookBody">
-                </tbody>
-              </table>
             </section>
           </div>
         </div>

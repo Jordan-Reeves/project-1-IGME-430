@@ -49,7 +49,9 @@ const handleGet = (request, response, parsedUrl, params) => {
     htmlHandler.getAddBooksPage(request, response);
   }  else if (parsedUrl.pathname === '/yourCollection') {
     htmlHandler.getYourCollection(request, response);
-  } else if (parsedUrl.pathname === '/getUsers') {
+  } else if (parsedUrl.pathname === '/communityCollections') {
+    htmlHandler.getCommunityCollections(request, response);
+  }  else if (parsedUrl.pathname === '/getUsers') {
     jsonHandler.getUsers(request, response);
   } else if (parsedUrl.pathname === '/getBooks') {
     jsonHandler.getBooks(request, response, params);
