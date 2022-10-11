@@ -6,28 +6,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link rel="stylesheet" type="text/css" href="/style.css">
   
-  <script>
-    const init = () => {
-      const usernameForm = document.querySelector('#usernameForm');
-      //localStorage.setItem("usernames",JSON.stringify([]));
-      
-      const addUserLS = (e) => {
-        e.preventDefault(); // stops form from sending request on it's own
-        const newUserName = usernameForm.querySelector('#usernameField').value;
-        // const storedUsernames = JSON.parse(localStorage.getItem("usernames"));
-        // if(!storedUsernames.includes(newUserName)){
-        //   localStorage.setItem('usernames', JSON.stringify([...storedUsernames, newUserName]));
-        // }
-        localStorage.setItem('username', newUserName); 
-        window.open('/collection', '_self');
-      }
-
-      usernameForm.addEventListener('submit', addUserLS);
-    };
-
-    window.onload = init;
-  </script>
-</head>
+ </head>
 <body>
   <nav class="navbar has-shadow is-white">
     <!-- Logo/brand -->
