@@ -4,12 +4,23 @@
 // We will be working with databases in the next few weeks.
 const users = {};
 
+// const filterBooks = (filter, filterVal, username) => {
+//   if(filterVal){
+//     let filteredBooks = [];
+//     users[username].books.forEach(book => {
+//       if(book[filter] === filterVal){
+//         filteredBooks.push(book);
+//       }
+//     });
+//     return filteredBooks;
+//   }
+// };
+
 const respondJSON = (request, response, status, object) => {
   response.writeHead(status, { 'Content-Type': 'application/json' });
   response.write(JSON.stringify(object));
   response.end();
 };
-
 const respondJSONMeta = (request, response, status) => {
   response.writeHead(status, { 'Content-Type': 'application/json' });
   response.end();
@@ -19,13 +30,52 @@ const getUsers = (request, response) => {
   const responseJSON = {
     users,
   };
-
-  respondJSON(request, response, 200, responseJSON);
+  return respondJSON(request, response, 200, responseJSON);
 };
-
 const getUsersMeta = (request, response) => {
   // return 200 without message, just the meta data
   respondJSONMeta(request, response, 200);
+};
+
+const getBooks = (request, response, params) => {
+  const responseJSON = {
+    message: 'User has no books.',
+  };
+
+  // if the user has no books or a username isn't given
+  if (!params.username || !users[params.username]) {
+    return respondJSON(request, response, 400, responseJSON, 'application/json');
+  }
+
+  responseJSON.message = 'You have successfully viewed your books';
+  responseJSON.username = params.username;
+  responseJSON.books = users[params.username].books;
+
+  // Attempt at filtering results
+  // if(params.author){
+  //   let filteredBooks = [];
+  //   users[params.username].books.forEach(book => {
+  //     if(book.author === params.author){
+  //       filteredBooks.push(book);
+  //     }
+  //   });
+  //   responseJSON.books=filteredBooks;
+  //   return respondJSON(request, response, 200, responseJSON, 'application/json');
+  // }
+  // if(params.title){
+  //   responseJSON.books = filterBooks("title", params.title, params.username);
+  // }
+  // if(params.author){
+  //   responseJSON.books = filterBooks("author", params.author, params.username);
+  // }
+
+  console.log(responseJSON);
+  return respondJSON(request, response, 200, responseJSON, 'application/json');
+};
+// function for 404 not found without message
+const getBooksMeta = (request, response) => {
+  // return a 404 without an error message
+  respondJSONMeta(request, response, 404);
 };
 
 const addBook = (request, response, body) => {
@@ -49,7 +99,7 @@ const addBook = (request, response, body) => {
   const oldBooks = users[body.username].books;
   const newBook = {
     title: body.title,
-    author: body.author,// ? body.author : 'Not provided',
+    author: body.author, // ? body.author : 'Not provided',
     bookStatus: body.bookStatus,
     notes: body.notes,
     rating: body.rating,
@@ -93,44 +143,18 @@ const notFound = (request, response) => {
   // return a 404 with an error message
   respondJSON(request, response, 404, responseJSON);
 };
-
 // function for 404 not found without message
 const notFoundMeta = (request, response) => {
   // return a 404 without an error message
   respondJSONMeta(request, response, 404);
 };
 
-const getBooks = (request, response, params) => {
-  const responseJSON = {
-    message: 'User has no books.',
-  };
-
-  // if the user has no books
-  if (!params.username || !users[params.username]) {
-    return respondJSON(request, response, 400, responseJSON, 'application/json');
-  }
-
-  responseJSON.message = 'You have successfully viewed your books';
-  responseJSON.username = params.username;
-  responseJSON.books = users[params.username].books;
-
-  // const resTextString = JSON.stringify(responseJSON.message);
-  console.log(responseJSON);
-  return respondJSON(request, response, 200, responseJSON, 'application/json');
-};
-
-// function for 404 not found without message
-const getBooksMeta = (request, response) => {
-  // return a 404 without an error message
-  respondJSONMeta(request, response, 404);
-};
-
 module.exports = {
   getUsers,
-  addBook,
   getUsersMeta,
-  notFound,
-  notFoundMeta,
   getBooks,
   getBooksMeta,
+  addBook,
+  notFound,
+  notFoundMeta,
 };

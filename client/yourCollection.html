@@ -12,15 +12,9 @@
       const bookTableBody = document.querySelector('#bookBody');
       
       switch(response.status) {
-        case 200:
-          status.innerHTML = `<b>Success</b>`;
+        case 200: //success don't need to say though
+          status.innerHTML = `<b></b>`;
           break;
-        case 201:
-          status.innerHTML = '<b>Created</b>';
-          break;
-        case 204:
-          status.innerHTML = '<b>Updated (No Content)</b>';
-          return;
         case 400:
           status.innerHTML = `<b>Bad Request</b>`;
           break;
@@ -55,64 +49,11 @@
           })
 
         }
-        else if(obj.users){
-          //To display the data easily, we will just stringify it again and display it.
-          let jsonString = JSON.stringify(obj.users);
-          console.log(jsonString);
-          //content.innerHTML += `<p>${jsonString}</p>`;
-          for (const [user, booksKey] of Object.entries(obj.users)) {
-            content.innerHTML += `<h5>User: ${user}</h5>`;
-            for (const [booksObj, array] of Object.entries(booksKey)) {
-              array.forEach(book => {
-                content.innerHTML += `<h5>${book.title}</h5>`;
-                let detailsList = `<ul>`;
-                detailsList += `<li>Author: ${book.author}</li>`;
-                detailsList += `<li>Status: ${book.bookStatus}</li>`;
-                detailsList += `<li>Notes: ${book.notes}</li>`;
-                detailsList += `<li>Rating: ${book.rating} star(s)</li>`;
-                detailsList += `<li>Image: <br><img src=${book.imageURL}></li>`;
-                detailsList += `</ul>`;
-                content.innerHTML += detailsList;
-              })
-            }
-          }
-       }
         else if(obj.message){
            status.innerHTML += `<p>Message: ${obj.message}</p>`;
         }
-        else{
-          content.innerHTML +="You currently have no books";
-        }
         
      }
-    };
-
-    const sendPost = async (usernameForm) => {
-      const title = bookForm.querySelector('#titleField').value;
-      const author = bookForm.querySelector('#authorField').value;
-      const bookStatus = bookForm.querySelector('#bookStatus').value;
-      const notes = bookForm.querySelector('#notesField').value;
-      const rating = bookForm.querySelector('#ratingField').value;
-      const imageURL = bookForm.querySelector('#imageField').value;
-
-      const bookAction = bookForm.getAttribute('action');
-      const bookMethod = bookForm.getAttribute('method');
-
-      const name = localStorage.getItem("username");
-
-      const formData = `username=${name}&title=${title}&author=${author}&bookStatus=${bookStatus}&notes=${notes}&rating=${rating}&imageURL=${imageURL}`;
-
-      const response = await fetch(bookAction, {
-        method: bookMethod, // 'POST'
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: formData,
-      });
-
-      handleResponse(response, true);
-
     };
 
      //function to send request. This is marked as async since we will use await.
@@ -133,7 +74,7 @@
     const init = () => {
       const name = localStorage.getItem("username");
       const currentUser = document.querySelector('#currentUser');
-      // currentUser.innerHTML += name + "!";
+      const filterBooks = document.querySelector('#filterBooks');
 
       if(name){
         currentUser.innerHTML += name + "'s book collection";
@@ -143,22 +84,24 @@
       }
 
       const getBooks = () => {
-        // e.preventDefault();
         const name = localStorage.getItem("username");
-        const url = `/getBooks?username=${name}`;
-        getData(url);
-        return false;
-      }
+        // const title = filterBooks.querySelector('#titleField').value;
+        // const author = filterBooks.querySelector('#authorField').value;
+        // const bookStatus = filterBooks.querySelector('#bookStatus').value;
+        // const rating = filterBooks.querySelector('#ratingField').value;
 
-      const getUsers = (e) => {
-        e.preventDefault();
-        const url = `/getUsers`;
+        let url = `/getBooks?username=${name}`;
+        // if(title) {url += `&title=${title}`};
+        // if(author) {url += `&author=${author}`};
+        // console.log(url);
+
         getData(url);
         return false;
       }
+      
 
       getBooks();
-      
+      // filterBooks.addEventListener('submit', getBooks);
       document.querySelector("#burger").onclick = () => document.querySelector("#nav-links").classList.toggle('is-active');
 
     };
@@ -214,36 +157,52 @@
           </h2>
         </div>
 
+        <!-- Attempted searching -->
+        <!-- <div class="box m-5">
+          <div class="mb-3">
+            <h2 id="currentUser" class="title is-3 has-text-weight-bold has-text-centered">Hello </h2>
+
+            <form id="filterBooks" action="/getBooks" method="post">
+              <div class="columns m-0">
+                <label for="title" class="title is-4 m-1 mb-2 has-text-black">Title: </label>
+                <input id="titleField" type="text" name="title" class="column is-two-fifths mr-3 input has-text-black is-small" placeholder="Ex. Black Stallion" title="Enter a book title" />
+                <label for="author" class=" title is-4 m-1 mb-2 has-text-black">Author: </label>
+                <input id="authorField" type="text" name="author" class="column is-two-fifths input has-text-black is-small" placeholder="Ex. Stacy Unknown" title="Enter an author" />
+              </div>
+
+              <div class="columns m-0">
+                <label for="bookStatus" class="title is-4 m-1 mb-2 has-text-black">Book Status: </label>
+                <div class="select mr-3 has-text-black is-small">
+                  <select id="bookStatus" name="bookStatus" class="column is-2 ">
+                    <option value="reading">Reading</option>
+                    <option value="finished">Finished</option>
+                    <option value="tbr">tbr</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="columns m-0">
+                <label for="rating" class="title is-4 m-1 mb-2 has-text-black">Rating: </label>
+                  <span class="select mr-3 has-text-black is-small">
+                    <select id="ratingField" name="rating" class="column is-3">
+                      <option value="0">0</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                    </select>
+                  </span>
+                  <input id="submitBook" type="submit" value="Submit" class="button is-primary is-small" />
+                </div>
+            </form>
+            </div>
+          </div> -->
 
         <!-- Collections -->
         <div class="box m-5">
           <div class="mb-3">
             <h2 id="currentUser" class="title is-3 has-text-weight-bold has-text-centered"></h2>  
-            
-            <!-- <table class="bookTable table is-striped is-hoverable">
-              <thead>
-                <tr>  
-                  <th>Title</th>
-                  <th>Author</th>
-                  <th>Status</th>
-                  <th>Rating</th>
-                  <th>Notes</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="titleImage">
-                    <img src="https://g.christianbook.com/dg/product/cbd/f450/813438.jpg" class="bookImg mr-3">
-                    <p class="bookTitle">Black Stallion</p>
-                  </td>
-                  <td>Walter Farley</td>
-                  <td>Finished</td>
-                  <td class="bookRating">5</td>
-                  <td>Very good book</td>
-                </tr> 
-                
-              </tbody>
-            </table> -->
 
             <section id="status">
             </section>

@@ -27,7 +27,6 @@ const parseBody = (request, response, requestHandler) => {
     const bodyString = Buffer.concat(body).toString(); // buffer is simiple data type like an array
     const bodyParams = query.parse(bodyString);
     // var1=value11&var2=value2 data format that query wants, default for HTML forms
-    // could also send JSON and use JSON.parse
     return requestHandler(request, response, bodyParams);
   });
 };
@@ -47,12 +46,12 @@ const handleGet = (request, response, parsedUrl, params) => {
     htmlHandler.getIndex(request, response);
   } else if (parsedUrl.pathname === '/addBooksPage') {
     htmlHandler.getAddBooksPage(request, response);
-  }  else if (parsedUrl.pathname === '/yourCollection') {
+  } else if (parsedUrl.pathname === '/yourCollection') {
     htmlHandler.getYourCollection(request, response);
   } else if (parsedUrl.pathname === '/communityCollections') {
     htmlHandler.getCommunityCollections(request, response);
-  }  else if (parsedUrl.pathname === '/getUsers') {
-    jsonHandler.getUsers(request, response);
+  } else if (parsedUrl.pathname === '/getUsers') {
+    jsonHandler.getUsers(request, response, params);
   } else if (parsedUrl.pathname === '/getBooks') {
     jsonHandler.getBooks(request, response, params);
   } else {

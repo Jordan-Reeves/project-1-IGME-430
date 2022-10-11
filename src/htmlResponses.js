@@ -36,6 +36,7 @@ const getYourCollection = (request, response) => {
   response.write(yourCollection);
   response.end();
 };
+
 const getCommunityCollections = (request, response) => {
   response.writeHead(200, { 'Content-Type': 'text/html' });
   response.write(communityCollections);

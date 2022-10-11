@@ -35,9 +35,6 @@
         case 200: //success don't need to say though
           status.innerHTML = `<b></b>`;
           break;
-        case 204:
-          status.innerHTML = '<b>Updated (No Content)</b>';
-          return;
         case 400:
           status.innerHTML = `<b>Bad Request</b>`;
           break;
@@ -85,40 +82,8 @@
         else if(obj.message){
            status.innerHTML += `<p>Message: ${obj.message}</p>`;
         }
-        else{
-          content.innerHTML +="You currently have no books";
-        }
       } 
     }
-    
-
-    const sendPost = async (usernameForm) => {
-      const title = bookForm.querySelector('#titleField').value;
-      const author = bookForm.querySelector('#authorField').value;
-      const bookStatus = bookForm.querySelector('#bookStatus').value;
-      const notes = bookForm.querySelector('#notesField').value;
-      const rating = bookForm.querySelector('#ratingField').value;
-      const imageURL = bookForm.querySelector('#imageField').value;
-
-      const bookAction = bookForm.getAttribute('action');
-      const bookMethod = bookForm.getAttribute('method');
-
-      const name = localStorage.getItem("username");
-
-      const formData = `username=${name}&title=${title}&author=${author}&bookStatus=${bookStatus}&notes=${notes}&rating=${rating}&imageURL=${imageURL}`;
-
-      const response = await fetch(bookAction, {
-        method: bookMethod, // 'POST'
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: formData,
-      });
-
-      handleResponse(response, true);
-
-    };
 
      //function to send request. This is marked as async since we will use await.
     const getData = async (url) => {
@@ -138,14 +103,6 @@
     const init = () => {
       const name = localStorage.getItem("username");
       const currentUser = document.querySelector('#currentUser');
-
-      const getBooks = () => {
-        // e.preventDefault();
-        const name = localStorage.getItem("username");
-        const url = `/getBooks?username=${name}`;
-        getData(url);
-        return false;
-      }
 
       const getUsers = () => {
         // e.preventDefault();
@@ -217,31 +174,6 @@
           <div class="mb-3">
             <h2 class="title is-3 has-text-weight-bold has-text-centered">Browse everyones book collections</h2>  
             
-            <!-- <table class="bookTable table is-striped is-hoverable">
-              <thead>
-                <tr>  
-                  <th>Title</th>
-                  <th>Author</th>
-                  <th>Status</th>
-                  <th>Rating</th>
-                  <th>Notes</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="titleImage">
-                    <img src="https://g.christianbook.com/dg/product/cbd/f450/813438.jpg" class="bookImg mr-3">
-                    <p class="bookTitle">Black Stallion</p>
-                  </td>
-                  <td>Walter Farley</td>
-                  <td>Finished</td>
-                  <td class="bookRating">5</td>
-                  <td>Very good book</td>
-                </tr> 
-                
-              </tbody>
-            </table> -->
-
             <section id="status">
             </section>
 

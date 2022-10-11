@@ -47,45 +47,6 @@
         //Parse the response to json. This is an async function, so we will await it.
         let obj = await response.json();
         console.log(obj);
-      //   if(obj.books){
-      //     //To display the data easily, we will just stringify it again and display it.
-      //     //let jsonString = JSON.stringify(obj.books);
-      //     obj.books.forEach(book => {
-      //       content.innerHTML += `<h5>${book.title}</h5>`;
-      //       let detailsList = `<ul>`;
-      //       detailsList += `<li>Author: ${book.author}</li>`;
-      //       detailsList += `<li>Status: ${book.bookStatus}</li>`;
-      //       detailsList += `<li>Notes: ${book.notes}</li>`;
-      //       detailsList += `<li>Rating: ${book.rating} star(s)</li>`;
-      //       detailsList += `<li>Image: <br><img src=${book.imageURL}></li>`;
-      //       detailsList += `</ul>`;
-      //       content.innerHTML += detailsList;
-      //     })
-
-      //   }
-      //   else if(obj.users){
-      //     //To display the data easily, we will just stringify it again and display it.
-      //     let jsonString = JSON.stringify(obj.users);
-      //     console.log(jsonString);
-      //     //content.innerHTML += `<p>${jsonString}</p>`;
-      //     for (const [user, booksKey] of Object.entries(obj.users)) {
-      //       content.innerHTML += `<h5>User: ${user}</h5>`;
-      //       for (const [booksObj, array] of Object.entries(booksKey)) {
-      //         array.forEach(book => {
-      //           content.innerHTML += `<h5>${book.title}</h5>`;
-      //           let detailsList = `<ul>`;
-      //           detailsList += `<li>Author: ${book.author}</li>`;
-      //           detailsList += `<li>Status: ${book.bookStatus}</li>`;
-      //           detailsList += `<li>Notes: ${book.notes}</li>`;
-      //           detailsList += `<li>Rating: ${book.rating} star(s)</li>`;
-      //           detailsList += `<li>Image: <br><img src=${book.imageURL}></li>`;
-      //           detailsList += `</ul>`;
-      //           content.innerHTML += detailsList;
-      //         })
-      //       }
-      //     }
-      //  }
-      //   else 
         if(obj.message){
            status.innerHTML += `<p>Message: ${obj.message}</p>`;
            if(response.status !== 400){
@@ -124,27 +85,11 @@
 
     };
 
-    //  //function to send request. This is marked as async since we will use await.
-    // const getData = async (url) => {
-
-    //   //Await our fetch response. Go to the URL, use the right method, and attach the headers.
-    //   let response = await fetch(url, {
-    //     method: 'get',
-    //     headers: {
-    //         'Accept': 'application/json'
-    //     },
-    //   });
-
-    //    handleResponse(response, true);
-    // };
-
-
     const init = () => {
       const bookForm = document.querySelector('#bookForm');
       const name = localStorage.getItem("username");
       const currentUser = document.querySelector('#currentUser');
 
-      // currentUser.innerHTML += name + "!";
       if(name){
         currentUser.innerHTML += name + "!";
       } else{
@@ -161,21 +106,6 @@
         sendPost(bookForm); 
         return false;
       }
-
-      // const getBooks = (e) => {
-      //   e.preventDefault();
-      //   const name = localStorage.getItem("username");
-      //   const url = `/getBooks?username=${name}`;
-      //   getData(url);
-      //   return false;
-      // }
-
-      // const getUsers = (e) => {
-      //   e.preventDefault();
-      //   const url = `/getUsers`;
-      //   getData(url);
-      //   return false;
-      // }
       
       bookForm.addEventListener('submit', addBook);
 
