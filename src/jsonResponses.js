@@ -39,11 +39,12 @@ const getUsersMeta = (request, response) => {
 
 const getBooks = (request, response, params) => {
   const responseJSON = {
-    message: 'User has no books.',
+    message: 'User has no books or user not given.',
   };
 
   // if the user has no books or a username isn't given
   if (!params.username || !users[params.username]) {
+    responseJSON.id = 'noBooksUserNotGiven';
     return respondJSON(request, response, 400, responseJSON, 'application/json');
   }
 

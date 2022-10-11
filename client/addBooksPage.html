@@ -93,6 +93,8 @@
       if(name){
         currentUser.innerHTML += name + "!";
       } else{
+        // disable form if no username given
+        // Loop from https://stackoverflow.com/questions/3386954/how-can-i-disable-everything-inside-a-form-using-javascript-jquery
         currentUser.classList.add("has-text-danger");
         var elements = bookForm.elements;
         for (var i = 0, len = elements.length; i < len; ++i) {
@@ -161,6 +163,7 @@
             Add a Book!
           </h1>
           <h2 class="subtitle is-4" style="color: white">
+            You can also update books by typing in their title   
           </h2>
         </div>
 

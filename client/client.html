@@ -15,9 +15,10 @@
       const addUserLS = (e) => {
         e.preventDefault(); // stops form from sending request on it's own
         const newUserName = usernameForm.querySelector('#usernameField').value;
+        
         if(newUserName.length > 0){
           localStorage.setItem('username', newUserName); 
-          window.open('/addBooksPage', '_self');
+          window.open('/addBooksPage', '_self'); // code from https://www.codexworld.com/how-to/open-url-in-same-browser-window-tab-using-javascript/#:~:text=The%20JavaScript%20window.,the%20same%20window%20with%20JavaScript.
         }else{
           document.querySelector("#isValid").innerHTML = "Error: Please provide a username";
         }
